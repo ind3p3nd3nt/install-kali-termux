@@ -378,11 +378,6 @@ create_launcher
 cleanup
 
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
-fix_profile_bash
-fix_sudo
-create_kex_launcher
-fix_uid
-
 print_banner
 printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
 printf "${green}[+] To start NetHunter, type:${reset}\n"
@@ -392,3 +387,7 @@ printf "${green}[+] nethunter kex &       # To start NetHunter gui${reset}\n"
 printf "${green}[+] nethunter kex stop    # To stop NetHunter gui${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
+fix_profile_bash
+fix_sudo
+create_kex_launcher
+fix_uid
