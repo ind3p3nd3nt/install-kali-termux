@@ -174,14 +174,14 @@ if [ ! -f $CHROOT/root/.version ]; then
     touch $CHROOT/root/.version
 fi
 
-## Default user is "kali"
+## Default user is "independent"
 user="$USERNAME"
 home="/home/\$user"
-start="sudo -u kali /bin/bash"
+start="sudo -u $USERNAME /bin/bash"
 
 ## NH can be launched as root with the "-r" cmd attribute
-## Also check if user kali exists, if not start as root
-if grep -q "kali" ${CHROOT}/etc/passwd; then
+## Also check if user $USERNAME exists, if not start as root
+if grep -q "$USERNAME" ${CHROOT}/etc/passwd; then
     KALIUSR="1";
 else
     KALIUSR="0";
@@ -243,7 +243,7 @@ function start-kex() {
     else
         SCREEN=":1"
     fi 
-    export HOME=\${HOME}; export USER=\${USR}; LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver \$SCREEN >/dev/null 2>&1 </dev/null
+    export HOME=\${HOME}; export USER=\${USR}; LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver -localhost no \$SCREEN >/dev/null 2>&1 </dev/null
     starting_kex=1
     return 0
 }
@@ -315,18 +315,18 @@ function fix_sudo() {
     ## fix sudo & su on start
     chmod +s $CHROOT/usr/bin/sudo
     chmod +s $CHROOT/usr/bin/su
-	echo "kali    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers.d/kali
+	echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers
 
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
 
 function fix_uid() {
-    ## Change kali uid and gid to match that of the termux user
+    ## Change $USERNAME uid and gid to match that of the termux user
     USRID=$(id -u)
     GRPID=$(id -g)
-    nh -r usermod -u $USRID kali 2>/dev/null
-    nh -r groupmod -g $GRPID kali 2>/dev/null
+    nh -r usermod -u $USRID $USERNAME 2>/dev/null
+    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
 }
 
 function print_banner() {
