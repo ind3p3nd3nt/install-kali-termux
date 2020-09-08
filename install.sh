@@ -3,6 +3,7 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=independent
+PASSWD=31337p455w0rd
 
 function unsupported_arch() {
     printf "${red}"
@@ -175,13 +176,14 @@ if [ ! -f $CHROOT/root/.version ]; then
 fi
 
 ## Default user is "independent"
-user="$USERNAME"
+user="${USERNAME}"
 home="/home/\$user"
-start="sudo -u $USERNAME /bin/bash"
+start="sudo -u ${USERNAME} /bin/bash"
+
 
 ## NH can be launched as root with the "-r" cmd attribute
-## Also check if user $USERNAME exists, if not start as root
-if grep -q "$USERNAME" ${CHROOT}/etc/passwd; then
+## Also check if user ${USERNAME} exists, if not start as root
+if grep -q "${USERNAME}" ${CHROOT}/etc/passwd; then
     KALIUSR="1";
 else
     KALIUSR="0";
@@ -313,19 +315,19 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-   if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; fi
+   if [ -f "$CHROOT/usr/bin/sudo" ]; then chroot $CHROOT /bin/bash -c "apt install sudo -y" && chmod +s $CHROOT/usr/bin/sudo; fi
    if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
-   if [ -f "$CHROOT/etc/sudoers" ]; then echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers; fi
+   if [ -f "$CHROOT/etc/sudoers" ]; then echo "${USERNAME}    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers; fi
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
 
 function fix_uid() {
-    ## Change $USERNAME uid and gid to match that of the termux user
+    ## Change ${USERNAME} uid and gid to match that of the termux user
     USRID=$(id -u)
     GRPID=$(id -g)
-    nh -r usermod -u $USRID $USERNAME 2>/dev/null
-    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
+    nh -r usermod -u $USRID ${USERNAME} 2>/dev/null
+    nh -r groupmod -g $GRPID ${USERNAME} 2>/dev/null
 }
 
 function print_banner() {
