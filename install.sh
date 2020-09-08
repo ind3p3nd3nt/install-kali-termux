@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
 
 VERSION=2020030908
-BASE_URL=https://images.kali.org/nethunter
+BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=independent
 
 function unsupported_arch() {
