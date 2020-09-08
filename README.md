@@ -8,5 +8,8 @@
 ##### nh -r
 ##### apt update && apt install wget -y && wget -O vncserver.sh https://github.com/independentcod/install-kali-termux/raw/master/vncserver.sh && sh vncserver.sh
 
+#### After the first installation use this piece of code to do a full upgrade of your system and install a full kali-linux-nethunter filesystem automatically!
+##### apt update && apt install wget -y && wget -O full_nhfs.sh https://github.com/independentcod/install-kali-termux/raw/master/full_nhfs.sh && sh full_nhfs.sh
+
 #### Use this shorturl in your android browser to come to this page directly: 
 https://is.gd/kalitermux
