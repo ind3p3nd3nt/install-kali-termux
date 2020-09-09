@@ -415,13 +415,17 @@ get_rootfs
 get_sha
 verify_sha
 extract_rootfs
+printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
 create_launcher
 update
 remote
 nh -r /sbin/useradd -m $USERNAME
 echo "Offensive-Security.com" > $CHROOT/etc/hostname
 cleanup
-printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
+fix_profile_bash
+fix_sudo
+create_kex_launcher
+fix_uid
 print_banner
 printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
 printf "${green}[+] To start NetHunter, type:${reset}\n"
@@ -433,7 +437,3 @@ printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install all kali-tools${reset}\n\n"
 printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
-fix_profile_bash
-fix_sudo
-create_kex_launcher
-fix_uid
