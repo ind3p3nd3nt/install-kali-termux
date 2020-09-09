@@ -343,7 +343,7 @@ function print_banner() {
     printf "${blue}##  88     '88.   d8'        '8b  88        88  ##\n"
     printf "${blue}##  88       Y8b d8'          '8b 888888888 88  ##\n"
     printf "${blue}##            Forked by @independentcod         ##\n"
-    printf "${blue}####  ############# NetHunter ####################${reset}\n\n"
+    printf "${blue}################### NetHunter ####################${reset}\n\n"
 }
 
 #!/data/data/com.termux/files/usr/bin/bash -e
@@ -691,7 +691,7 @@ function print_banner() {
     printf "${blue}##  88     '88.   d8'        '8b  88        88  ##\n"
     printf "${blue}##  88       Y8b d8'          '8b 888888888 88  ##\n"
     printf "${blue}##            Forked by @independentcod         ##\n"
-    printf "${blue}####  ############# NetHunter ####################${reset}\n\n"
+    printf "${blue}################### NetHunter ####################${reset}\n\n"
 }
 
 
