@@ -188,14 +188,14 @@ if grep -q "$USERNAME" ${CHROOT}/etc/passwd; then
 else
     KALIUSR="0";
 fi
-if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];then
+if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]]; then
     user="root"
     home="/\$user"
     cmd1="apt update"
     cmd2="apt-get install busybox sudo kali-tools. -y"
     cmd3="apt full-upgrade -y"
     start="/bin/bash --login"
-    if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]];then
+    if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]]; then
         shift
     fi
 fi
@@ -219,7 +219,7 @@ cmdline="proot \\
            \$start"
 
 cmd="\$@"
-if [ "\$#" == "0" ];then
+if [ "\$#" == "0" ]; then
     exec \$cmdline
 else
     \$cmdline -c "\$cmd"
