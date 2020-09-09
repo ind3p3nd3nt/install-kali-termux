@@ -199,8 +199,8 @@ nh -r \$cmd2;
 nh -r \$cmd3;
 if [ -d ${CHROOT}/root/mollyweb ]; then rm -rf ${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
-echo Listen 8088 > $CHROOT/etc/apache2/ports.conf;
-echo Listen 8443 ssl >> $CHROOT/etc/apache2/ports.conf;
+echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
+echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
 nh -r \$cmd5;
 pkg install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
