@@ -185,12 +185,14 @@ function remote() {
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 unset LD_PRELOAD
+user="root"
+home="/\$user"
+nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 user="n3thunt3r"
 home="/home/\$user"
 nh -r /bin/mkdir \${home}/.vnc;
 nh -r /bin/echo 'lxsession &' > \${home}/.vnc/xstartup;
 nh -r /bin/echo 'lxterminal &' >> \${home}/.vnc/xstartup;
-nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 nh -r /bin/rm -rf /tmp/.X3-lock;
 nh -r /bin/vncserver -kill :3;
 nh -r /bin/vncserver :3 -localhost no;
