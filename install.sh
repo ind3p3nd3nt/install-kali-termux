@@ -419,9 +419,7 @@ printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
 create_launcher
 update
 remote
-nh -r /sbin/useradd -m $USERNAME
-echo "127.0.0.1     Offensive-Security.com" > $CHROOT/etc/hosts
-echo "::1     Offensive-Security.com" >> $CHROOT/etc/hosts
+nh -r /sbin/useradd $USERNAME
 cleanup
 fix_profile_bash
 fix_sudo
