@@ -184,7 +184,7 @@ function remote() {
     cat > $NH_REMOTE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
 user="n3thunt3r"
-home="/home/\$user"
+home="/home/n3thunt3r"
 nh -r /bin/mkdir $home/.vnc;
 nh -r /bin/echo 'lxsession &' >$home/.vnc/xstartup;
 nh -r /bin/echo 'lxterminal &' >>$home/.vnc/xstartup;
@@ -215,7 +215,7 @@ fi
 
 ## Default user is "n3thunt3r"
 user="n3thunt3r"
-home="/home/\$user"
+home="/home/n3thunt3r"
 start="sudo -u $USERNAME /bin/bash"
 
 ## NH can be launched as root with the "-r" cmd attribute
@@ -417,7 +417,7 @@ extract_rootfs
 create_launcher
 update
 remote
-nh -r /sbin/useradd -m $USERNAME
+nh -r /sbin/useradd $USERNAME
 echo "Offensive-Security.com" > $CHROOT/etc/hostname
 cleanup
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
