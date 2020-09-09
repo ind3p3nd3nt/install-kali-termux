@@ -179,7 +179,7 @@ cmd3="apt full-upgrade -y"
 cmd4="apt auto-remove -y"
 char="'"
 boiler="/bin/bash --login -c "
-wholecmd="${char}$cmd1 && $cmd2 && $cmd3 && $cmd4${char}"
+wholecmd="${char}$cmd1 |& $cmd2 |& $cmd3 |& $cmd4${char}"
 cmdline="proot \\
         --link2symlink \\
         -0 \\
