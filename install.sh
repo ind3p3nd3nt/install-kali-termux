@@ -217,7 +217,6 @@ fi
 user="n3thunt3r"
 home="/home/\$user"
 start="sudo -u $USERNAME /bin/bash"
-nh -r /sbin/useradd -m $USERNAME;
 
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
@@ -354,7 +353,7 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r /bin/apt update && nh -r /bin/apt install sudo busybox -y && nh -r /sbin/useradd -m $USERNAME && chmod +s $CHROOT/usr/bin/sudo; fi
+    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r /bin/apt update && nh -r /bin/apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
     if [ ! -d "$CHROOT/etc/sudoers.d/" ]; then mkdir $CHROOT/etc/sudoers.d/; fi
     if [ ! -f "$CHROOT/etc/sudoers.d/$USERNAME" ]; then echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/$USERNAME; fi
@@ -418,8 +417,8 @@ extract_rootfs
 create_launcher
 update
 remote
+nh -r /sbin/useradd -m $USERNAME
 cleanup
-
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
 print_banner
 printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
