@@ -2,7 +2,7 @@
 
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
-USERNAME=nethunter
+USERNAME=n3thunt3r
 
 function unsupported_arch() {
     printf "${red}"
@@ -213,12 +213,11 @@ if [ ! -f $CHROOT/root/.version ]; then
     touch $CHROOT/root/.version
 fi
 
-## Default user is "nethunter"
-user="nethunter"
+## Default user is "n3thunt3r"
+user="n3thunt3r"
 home="/home/\$user"
-nh -r 
 start="sudo -u $USERNAME /bin/bash"
-
+nh -r /sbin/useradd -m $USERNAME;
 
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
