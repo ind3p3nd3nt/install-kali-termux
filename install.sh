@@ -191,7 +191,9 @@ fi
 if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];then
     user="root"
     home="/\$user"
-    start="/bin/bash --login -c \"apt update && apt install busybox sudo -y\"" 
+    char'"'
+    cmd1="${char}apt update && apt install busybox sudo -y${char}"
+    start="/bin/bash --login -c ${cmd1}" 
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]];then
         shift
     fi
