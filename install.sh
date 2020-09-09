@@ -183,6 +183,7 @@ function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
     cat > $NH_REMOTE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
+unset LD_PRELOAD
 user="n3thunt3r"
 home="/home/n3thunt3r"
 nh -r /bin/mkdir $home/.vnc;
@@ -417,7 +418,7 @@ extract_rootfs
 create_launcher
 update
 remote
-nh -r /sbin/useradd $USERNAME
+nh -r /sbin/useradd -m $USERNAME
 echo "Offensive-Security.com" > $CHROOT/etc/hostname
 cleanup
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
