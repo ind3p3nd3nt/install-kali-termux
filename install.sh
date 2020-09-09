@@ -418,6 +418,7 @@ create_launcher
 update
 remote
 nh -r /sbin/useradd -m $USERNAME
+nh -r echo "Offensive-Security.com" > /etc/hostname
 cleanup
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
 print_banner
