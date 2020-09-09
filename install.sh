@@ -197,7 +197,7 @@ cmd5="service apache2 start"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
-if [ -d $CHROOT/${home}/mollyweb ]; then rm -rf mollyweb/; fi
+if [ -d $CHROOT/root/mollyweb ]; then rm -rf $CHROOT/root/mollyweb; fi
 nh -r \$cmd4;
 echo Listen 8088 > $CHROOT/etc/apache2/ports.conf;
 echo Listen 8443 ssl >> $CHROOT/etc/apache2/ports.conf;
