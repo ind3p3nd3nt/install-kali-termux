@@ -197,12 +197,14 @@ cmd5="service apache2 start"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
+if [ -d $CHROOT/${home}/mollyweb ]; then rm -rf mollyweb/; fi
 nh -r \$cmd4;
 echo Listen 8088 > $CHROOT/etc/apache2/ports.conf;
 echo Listen 8443 ssl >> $CHROOT/etc/apache2/ports.conf;
 nh -r \$cmd5;
 pkg install net-tools -y;
-myip=\$(ifconfig wlan0 | grep inet) && echo "Your apache2 IP address: http://\${myip}:8088 and https://\${myip}:8443";
+myip=\$(ifconfig wlan0 | grep inet) 
+echo "Your apache2 IP address: http://\${myip}:8088 and https://\${myip}:8443";
 EOF
     chmod +x $NH_WEBD  
 }
@@ -222,7 +224,8 @@ if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin
 nh -r /bin/vncserver :3 -localhost no;
 nh -r echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 pkg install net-tools -y;
-myip=\$(ifconfig wlan0 | grep inet) && echo "Your Phone IP address: \$myip";
+myip=\$(ifconfig wlan0 | grep inet) 
+echo "Your Phone IP address: \$myip";
 EOF
     chmod +x $NH_REMOTE  
 }
