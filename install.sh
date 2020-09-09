@@ -1,4 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
+# This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
+# I just added some stuff I thought it was cool. No hate, we are family.
 
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
