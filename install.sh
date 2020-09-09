@@ -160,6 +160,26 @@ function extract_rootfs() {
     fi
 }
 
+function update() {
+cd \${HOME}
+NH_UPDATE=${PREFIX}/bin/upd
+cat > $NH_UPDATE <<- EOF
+#!/data/data/com.termux/files/usr/bin/bash -e
+## termux-exec sets LD_PRELOAD so let's unset it before continuing
+unset LD_PRELOAD
+## Workaround for Libreoffice, also needs to bind a fake /proc/version
+if [ ! -f $CHROOT/root/.version ]; then
+    touch $CHROOT/root/.version
+fi
+user="root"
+home="/\$user"
+cmd1="proot --link2symlink apt update"
+cmd2="proot --link2symlink apt-get install busybox sudo kali-tools. -y"
+cmd3="proot --link2symlink apt full-upgrade -y"
+\$cmd1 && \$cmd2 && \$cmd3;
+EOF
+    chmod +x $NH_UPDATE  
+}
 
 function create_launcher() {
     NH_LAUNCHER=${PREFIX}/bin/nethunter
@@ -376,6 +396,7 @@ get_sha
 verify_sha
 extract_rootfs
 create_launcher
+update
 cleanup
 
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
@@ -388,6 +409,7 @@ printf "${green}[+] nethunter kex &       # To start NetHunter gui${reset}\n"
 printf "${green}[+] nethunter kex stop    # To stop NetHunter gui${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
+printf "${green}[+] upd                   # To update everything and install all kali-tools${reset}\n\n"
 fix_profile_bash
 fix_sudo
 create_kex_launcher
