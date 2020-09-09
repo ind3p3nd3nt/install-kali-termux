@@ -317,13 +317,7 @@ function fix_sudo() {
     ## fix sudo & su on start
    if [ ! -f "$CHROOT/usr/bin/sudo" ]; 
    then
-    cd \${HOME}
-    ## termux-exec sets LD_PRELOAD so let's unset it before continuing
     unset LD_PRELOAD
-    ## Workaround for Libreoffice, also needs to bind a fake /proc/version
-    if [ ! -f $CHROOT/root/.version ]; then
-        touch $CHROOT/root/.version
-    fi
     user="root"
     home="/\$user"
     start="apt install busybox sudo -y"
