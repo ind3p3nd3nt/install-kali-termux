@@ -185,6 +185,33 @@ EOF
     chmod +x $NH_UPDATE  
 }
 
+function remote() {
+    NH_REMOTE=${PREFIX}/bin/remote
+    cat > $NH_REMOTE <<- EOF
+#!/data/data/com.termux/files/usr/bin/bash -e
+cd \${HOME}
+## termux-exec sets LD_PRELOAD so let's unset it before continuing
+unset LD_PRELOAD
+## Workaround for Libreoffice, also needs to bind a fake /proc/version
+if [ ! -f $CHROOT/root/.version ]; then
+    touch $CHROOT/root/.version
+fi
+user="root"
+home="/\$user"
+nh -r mkdir ~/.vnc;
+nh -r echo 'lxsession &' >~/.vnc/xstartup;
+nh -r echo 'lxterminal &' >>~/.vnc/xstartup;
+nh -r apt update && apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
+nh -r rm -rf /tmp/.X3-lock;
+nh -r vncserver -kill :3;
+nh -r vncserver :3 -localhost no;
+nh -r echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
+nh -r export myip=$(ifconfig wlan0 | grep inet) && echo "Your Phone IP address: $myip";
+EOF
+    chmod +x $NH_REMOTE  
+}
+
+
 
 function create_launcher() {
     NH_LAUNCHER=${PREFIX}/bin/nethunter
@@ -415,6 +442,7 @@ printf "${green}[+] nethunter kex stop    # To stop NetHunter gui${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install all kali-tools${reset}\n\n"
+printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
 fix_profile_bash
 fix_sudo
 create_kex_launcher
