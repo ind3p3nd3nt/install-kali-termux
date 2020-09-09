@@ -177,8 +177,9 @@ cmd1="apt update"
 cmd2="apt-get install busybox sudo kali-tools. -y"
 cmd3="apt full-upgrade -y"
 cmd4="apt auto-remove -y"
-boiler="/bin/bash -c"
-wholecmd="$cmd1 && $cmd2 && $cmd3 && $cmd4"
+char="'"
+boiler="/bin/bash --login -c ${char}"
+wholecmd="$cmd1 && $cmd2 && $cmd3 && $cmd4 ${char}"
 cmdline="proot \\
         --link2symlink \\
         -0 \\
