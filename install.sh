@@ -420,6 +420,8 @@ create_launcher
 update
 remote
 nh -r /sbin/useradd $USERNAME
+echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
+echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
 cleanup
 fix_profile_bash
 fix_sudo
