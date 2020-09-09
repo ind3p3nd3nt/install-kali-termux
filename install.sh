@@ -320,7 +320,7 @@ function fix_sudo() {
     unset LD_PRELOAD
     user="root"
     home="/\$user"
-    start='apt update && apt install busybox sudo -y'
+    start="/bin/bash -c \"apt update && apt install busybox sudo -y\""
     cmdline="proot \\
         --link2symlink \\
         -0 \\
