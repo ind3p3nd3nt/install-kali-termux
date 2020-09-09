@@ -213,9 +213,6 @@ cmdline="proot \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
-           \$cmd1 \\
-           \$cmd2 \\
-           \$cmd3 \\
            \$start"
 
 cmd="\$@"
