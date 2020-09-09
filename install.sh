@@ -192,7 +192,7 @@ cmdline="proot \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
-           \$boiler \"\$wholecmd\""
+           \$boiler \"\${wholecmd}\""
 cmd="\$@"
 if [ "\$#" == "0" ]; then
     exec \$cmdline
