@@ -193,8 +193,7 @@ cmd1="/bin/apt update"
 cmd2="/bin/apt-get install apache2 net-tools sudo git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
-cmd5="/sbin/systemctl enable apache2"
-cmd6="service apache2 start"
+cmd5="service apache2 start"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
@@ -203,8 +202,8 @@ sed 's/Listen/#Listen/g' $CHROOT/etc/apache2/ports.conf;
 echo Listen 8088 >> $CHROOT/etc/apache2/ports.conf;
 echo Listen 8443 ssl >> $CHROOT/etc/apache2/ports.conf;
 nh -r \$cmd5;
-nh -r \$cmd6;
-nh -r export myip=\$(ifconfig wlan0 | grep inet) && nh -r /bin/echo "Your apache2 IP address: http://\${myip}:8088 and https://\${myip}:8443";
+pkg install net-tools -y;
+myip=\$(ifconfig wlan0 | grep inet) && echo "Your apache2 IP address: http://\${myip}:8088 and https://\${myip}:8443";
 EOF
     chmod +x $NH_WEBD  
 }
@@ -223,7 +222,8 @@ home="/home/\$user"
 if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 nh -r /bin/vncserver :3 -localhost no;
 nh -r echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-nh -r export myip=\$(ifconfig wlan0 | grep inet) && nh -r echo "Your Phone IP address: \$myip";
+pkg install net-tools -y;
+myip=\$(ifconfig wlan0 | grep inet) && echo "Your Phone IP address: \$myip";
 EOF
     chmod +x $NH_REMOTE  
 }
