@@ -315,7 +315,28 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-   if [ ! -f "$CHROOT/usr/bin/sudo" ]; then proot -r $CHROOT "apt install sudo -y"; else chmod +s $CHROOT/usr/bin/sudo; fi
+   if [ ! -f "$CHROOT/usr/bin/sudo" ]; 
+   then
+    user="root"
+    home="/\$user"
+    start="apt install busybox sudo -y"
+    cmdline="proot \\
+        --link2symlink \\
+        -0 \\
+        -r $CHROOT \\
+        -b /dev \\
+        -b /proc \\
+        -b $CHROOT\$home:/dev/shm \\
+        -w \$home \\
+           /usr/bin/env -i \\
+           HOME=\$home \\
+           PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
+           TERM=\$TERM \\
+           LANG=C.UTF-8 \\
+           \$start"
+   else 
+   chmod +s $CHROOT/usr/bin/sudo 
+   fi
    if [ ! -f "$CHROOT/usr/bin/su" ]; then proot -r $CHROOT "apt install busybox -y"; else chmod +s $CHROOT/usr/bin/su; fi
    if [ ! -f "$CHROOT/etc/sudoers.d/${USERNAME}" ]; then echo "${USERNAME}    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/${USERNAME} && echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers; fi
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
