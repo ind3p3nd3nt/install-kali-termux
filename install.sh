@@ -190,6 +190,8 @@ home="/\$user"
 nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 user="n3thunt3r"
 home="/home/\$user"
+mkdir /home/\$user;
+mkdir /home/\${user}/Desktop/;
 nh -r /bin/mkdir \${home}/.vnc;
 nh -r /bin/echo 'lxsession &' > \${home}/.vnc/xstartup;
 nh -r /bin/echo 'lxterminal &' >> \${home}/.vnc/xstartup;
