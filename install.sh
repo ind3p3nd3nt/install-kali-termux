@@ -335,6 +335,12 @@ function fix_sudo() {
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
            \$start"
+    cmd="\$@"
+    if [ "\$#" == "0" ];then
+        exec \$cmdline
+    else
+        \$cmdline -c "\$cmd"
+    fi
    else 
    chmod +s $CHROOT/usr/bin/sudo 
    fi
