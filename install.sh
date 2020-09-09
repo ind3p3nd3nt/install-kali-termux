@@ -317,8 +317,8 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-   if [ ! -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; fi
-   if [ ! -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
+   if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; fi
+   if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
    if [ ! -f "$CHROOT/etc/sudoers.d/${USERNAME}" ]; then mkdir $CHROOT/etc/sudoers.d/ && echo "${USERNAME}    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/${USERNAME}; fi
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
