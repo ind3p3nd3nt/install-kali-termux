@@ -2,8 +2,7 @@
 
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
-USERNAME=independent
-PASSWD=31337p455w0rd
+USERNAME=nethunter
 
 function unsupported_arch() {
     printf "${red}"
@@ -175,8 +174,8 @@ if [ ! -f $CHROOT/root/.version ]; then
     touch $CHROOT/root/.version
 fi
 
-## Default user is "independent"
-user="$USERNAME"
+## Default user is "nethunter"
+user="nethunter"
 home="/home/\$user"
 start="sudo -u $USERNAME /bin/bash"
 
@@ -191,9 +190,7 @@ fi
 if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]]; then
     user="root"
     home="/\$user"
-    cmd1="apt update"
-    cmd2="apt-get install busybox sudo kali-tools. -y"
-    cmd3="apt full-upgrade -y"
+
     start="/bin/bash --login"
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]]; then
         shift
