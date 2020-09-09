@@ -180,7 +180,7 @@ EOF
 }
 
 function webd() {
-    NH_WEBD=${PREFIX}/bin/upd
+    NH_WEBD=${PREFIX}/bin/webd
     cat > $NH_WEBD <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
