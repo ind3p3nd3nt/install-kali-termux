@@ -173,34 +173,14 @@ if [ ! -f $CHROOT/root/.version ]; then
 fi
 user="root"
 home="/\$user"
-cmd1="apt update"
-cmd2="apt-get install busybox sudo kali-tools. -y"
-cmd3="apt full-upgrade -y"
-cmd4="apt auto-remove -y"
-char="'"
-boiler="/bin/bash --login -c "
-wholecmd="${char}$cmd1 |& $cmd2 |& $cmd3 |& $cmd4${char}"
-cmdline="proot \\
-        --link2symlink \\
-        -0 \\
-        -r $CHROOT \\
-        -b /dev \\
-        -b /proc \\
-        -b $CHROOT\$home:/dev/shm \\
-        -w \$home \\
-           /usr/bin/env -i \\
-           HOME=\$home \\
-           PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
-           TERM=\$TERM \\
-           LANG=C.UTF-8 \\
-           \${boiler} \\
-           \${wholecmd}"
-cmd="\$@"
-if [ "\$#" == "0" ]; then
-    exec \$cmdline
-else
-    \$cmdline -c "\$cmd"
-fi
+cmd1="/bin/apt update"
+cmd2="/bin/apt-get install busybox sudo kali-tools. -y"
+cmd3="/bin/apt full-upgrade -y"
+cmd4="/bin/apt auto-remove -y"
+nh -r \$cmd1;
+nh -r \$cmd2;
+nh -r \$cmd3;
+nh -r \$cmd4;
 EOF
     chmod +x $NH_UPDATE  
 }
