@@ -452,8 +452,7 @@ create_launcher
 update
 remote
 webd
-nh -r export CHK=$(id -a $USERNAME)
-if [ -z $CHK ]; then nh -r /sbin/useradd $USERNAME; fi
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd $USERNAME; fi
 echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
 echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
 cleanup
