@@ -161,7 +161,6 @@ function extract_rootfs() {
 }
 
 function update() {
-cd \${HOME}
 NH_UPDATE=${PREFIX}/bin/upd
 cat > $NH_UPDATE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
