@@ -183,11 +183,11 @@ function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
     cat > $NH_REMOTE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
-user="root"
-home="/root"
-nh -r /bin/mkdir /root/.vnc;
-nh -r /bin/echo 'lxsession &' >/root/.vnc/xstartup;
-nh -r /bin/echo 'lxterminal &' >>/root/.vnc/xstartup;
+user="n3thunt3r"
+home="/home/\$user"
+nh -r /bin/mkdir $home/.vnc;
+nh -r /bin/echo 'lxsession &' >$home/.vnc/xstartup;
+nh -r /bin/echo 'lxterminal &' >>$home/.vnc/xstartup;
 nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 nh -r /bin/rm -rf /tmp/.X3-lock;
 nh -r /bin/vncserver -kill :3;
