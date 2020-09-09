@@ -164,15 +164,9 @@ function update() {
     NH_UPDATE=${PREFIX}/bin/upd
     cat > $NH_UPDATE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
-cd \${HOME}
-## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
-## Workaround for Libreoffice, also needs to bind a fake /proc/version
-if [ ! -f $CHROOT/root/.version ]; then
-    touch $CHROOT/root/.version
-fi
 user="root"
-home="/\$user"
+home="/root"
 cmd1="/bin/apt update"
 cmd2="/bin/apt-get install busybox sudo kali-tools. -y"
 cmd3="/bin/apt full-upgrade -y"
@@ -191,15 +185,15 @@ function remote() {
 #!/data/data/com.termux/files/usr/bin/bash -e
 user="root"
 home="/root"
-nh -r mkdir /root/.vnc;
-nh -r echo 'lxsession &' >/root/.vnc/xstartup;
-nh -r echo 'lxterminal &' >>/root/.vnc/xstartup;
-nh -r apt update && apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
-nh -r rm -rf /tmp/.X3-lock;
-nh -r vncserver -kill :3;
-nh -r vncserver :3 -localhost no;
-nh -r echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-nh -r export myip=$(ifconfig wlan0 | grep inet) && echo "Your Phone IP address: $myip";
+nh -r /bin/mkdir /root/.vnc;
+nh -r /bin/echo 'lxsession &' >/root/.vnc/xstartup;
+nh -r /bin/echo 'lxterminal &' >>/root/.vnc/xstartup;
+nh -r /bin/apt update && /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
+nh -r /bin/rm -rf /tmp/.X3-lock;
+nh -r /bin/vncserver -kill :3;
+nh -r /bin/vncserver :3 -localhost no;
+nh -r /bin/echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
+nh -r export myip=$(ifconfig wlan0 | grep inet) && /bin/echo "Your Phone IP address: $myip";
 EOF
     chmod +x $NH_REMOTE  
 }
