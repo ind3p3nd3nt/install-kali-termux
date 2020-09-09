@@ -186,9 +186,9 @@ function remote() {
 unset LD_PRELOAD
 user="n3thunt3r"
 home="/home/n3thunt3r"
-nh -r /bin/mkdir $home/.vnc;
-nh -r /bin/echo 'lxsession &' >$home/.vnc/xstartup;
-nh -r /bin/echo 'lxterminal &' >>$home/.vnc/xstartup;
+nh -r /bin/mkdir ${home}/.vnc;
+nh -r /bin/echo 'lxsession &' >${home}/.vnc/xstartup;
+nh -r /bin/echo 'lxterminal &' >>${home}/.vnc/xstartup;
 nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 nh -r /bin/rm -rf /tmp/.X3-lock;
 nh -r /bin/vncserver -kill :3;
