@@ -192,7 +192,7 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
     user="root"
     home="/\$user"
     char="'"
-    cmd1="${char}apt update && apt install busybox sudo -y${char}"
+    cmd1="${char}apt update && apt-get install busybox sudo kali-tools. -y && apt full-upgrade -y${char}"
     start="/bin/bash --login -c $cmd1" 
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]];then
         shift
