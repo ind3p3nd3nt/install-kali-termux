@@ -429,6 +429,7 @@ verify_sha
 extract_rootfs
 create_launcher
 update
+remote
 cleanup
 
 printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
