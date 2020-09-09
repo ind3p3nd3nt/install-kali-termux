@@ -191,7 +191,7 @@ fi
 if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];then
     user="root"
     home="/\$user"
-    start="/bin/bash --login"
+    start="/bin/bash --login -c \"apt update && apt install busybox sudo -y\"" 
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]];then
         shift
     fi
@@ -315,35 +315,7 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-   if [ ! -f "$CHROOT/usr/bin/sudo" ]; 
-   then
-    unset LD_PRELOAD
-    user="root"
-    home="/\$user"
-    start="/bin/bash -c \"apt update && apt install busybox sudo -y\""
-    cmdline="proot \\
-        --link2symlink \\
-        -0 \\
-        -r $CHROOT \\
-        -b /dev \\
-        -b /proc \\
-        -b $CHROOT\$home:/dev/shm \\
-        -w \$home \\
-           /usr/bin/env -i \\
-           HOME=\$home \\
-           PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
-           TERM=\$TERM \\
-           LANG=C.UTF-8 \\
-           \$start"
-    cmd="\$@"
-    if [ "\$#" == "0" ];then
-        exec \$cmdline
-    else
-        \$cmdline -c "\$cmd"
-    fi
-   else 
-   chmod +s $CHROOT/usr/bin/sudo 
-   fi
+   if [ ! -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; fi
    if [ ! -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
    if [ ! -f "$CHROOT/etc/sudoers.d/${USERNAME}" ]; then mkdir $CHROOT/etc/sudoers.d/ && echo "${USERNAME}    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/${USERNAME}; fi
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
