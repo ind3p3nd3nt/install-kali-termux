@@ -179,6 +179,33 @@ EOF
     chmod +x $NH_UPDATE  
 }
 
+function webd() {
+    NH_WEBD=${PREFIX}/bin/upd
+    cat > $NH_WEBD <<- EOF
+#!/data/data/com.termux/files/usr/bin/bash -e
+unset LD_PRELOAD
+user="root"
+home="/root"
+cmd1="/bin/apt update"
+cmd2="/bin/apt-get install apache2 net-tools sudo git -y"
+cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
+cmd4="/bin/sh mollyweb/bootstrap.sh"
+cmd5="/sbin/systemctl enable apache2"
+cmd6="service apache2 start"
+nh -r \$cmd1;
+nh -r \$cmd2;
+nh -r \$cmd3;
+nh -r \$cmd4;
+sed 's/Listen/#Listen/g' $CHROOT/etc/apache2/ports.conf;
+echo Listen 8088 >> $CHROOT/etc/apache2/ports.conf;
+echo Listen 8443 ssl >> $CHROOT/etc/apache2/ports.conf;
+nh -r \$cmd5;
+nh -r \$cmd6;
+nh -r export myip=\$(ifconfig wlan0 | grep inet) && nh -r /bin/echo "Your apache2 IP address: http://\${myip}:8088 and https://\${myip}:8443";
+EOF
+    chmod +x $NH_WEBD  
+}
+
 function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
     cat > $NH_REMOTE <<- EOF
@@ -190,16 +217,15 @@ home="/\$user"
 nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 user="n3thunt3r"
 home="/home/\$user"
-mkdir /home/\$user;
-mkdir /home/\${user}/Desktop/;
-nh -r /bin/mkdir \${home}/.vnc;
-nh -r /bin/echo 'lxsession &' > \${home}/.vnc/xstartup;
-nh -r /bin/echo 'lxterminal &' >> \${home}/.vnc/xstartup;
-nh -r /bin/rm -rf /tmp/.X3-lock;
-nh -r /bin/vncserver -kill :3;
+if [ ! -d $CHROOT/home/\$user ]; then nh -r /bin/mkdir ${home}; fi
+if [ ! -d $CHROOT/home/\${user}/Desktop/ ]; then nh -r /bin/mkdir ${home}/Desktop/; fi
+if [ ! -d $CHROOT/\${home}/.vnc ]; then nh -r /bin/mkdir \${home}/.vnc; fi
+echo 'lxsession &' > $CHROOT/\${home}/.vnc/xstartup;
+echo 'lxterminal &' >> $CHROOT/\${home}/.vnc/xstartup;
+if [ -f $CHROOT/tmp/.X3-lock ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 nh -r /bin/vncserver :3 -localhost no;
-nh -r /bin/echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-nh -r export myip=\$(ifconfig wlan0 | grep inet) && nh -r /bin/echo "Your Phone IP address: \$myip";
+nh -r echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
+nh -r export myip=\$(ifconfig wlan0 | grep inet) && nh -r echo "Your Phone IP address: \$myip";
 EOF
     chmod +x $NH_REMOTE  
 }
@@ -424,6 +450,7 @@ printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
 create_launcher
 update
 remote
+webd
 nh -r /sbin/useradd $USERNAME
 echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
 echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
@@ -443,3 +470,4 @@ printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install all kali-tools${reset}\n\n"
 printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
+printf "${green}[+] webd                  # To install an SSL Website www.mollyeskam.net as template ${reset}\n\n"
