@@ -186,15 +186,15 @@ function remote() {
 unset LD_PRELOAD
 user="n3thunt3r"
 home="/home/n3thunt3r"
-nh -r /bin/mkdir ${home}/.vnc;
-nh -r /bin/echo 'lxsession &' > ${home}/.vnc/xstartup;
-nh -r /bin/echo 'lxterminal &' >> ${home}/.vnc/xstartup;
+nh -r /bin/mkdir \${home}/.vnc;
+nh -r /bin/echo 'lxsession &' > \${home}/.vnc/xstartup;
+nh -r /bin/echo 'lxterminal &' >> \${home}/.vnc/xstartup;
 nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 nh -r /bin/rm -rf /tmp/.X3-lock;
 nh -r /bin/vncserver -kill :3;
 nh -r /bin/vncserver :3 -localhost no;
 nh -r /bin/echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-nh -r export myip=$(ifconfig wlan0 | grep inet) && nh -r /bin/echo "Your Phone IP address: $myip";
+nh -r export myip=\$(ifconfig wlan0 | grep inet) && nh -r /bin/echo "Your Phone IP address: \$myip";
 EOF
     chmod +x $NH_REMOTE  
 }
