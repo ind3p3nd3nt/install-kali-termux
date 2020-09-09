@@ -183,9 +183,10 @@ function webd() {
     NH_WEBD=${PREFIX}/bin/upd
     cat > $NH_WEBD <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
+cd \${HOME}
 unset LD_PRELOAD
 user="root"
-home="/root"
+home="/\$user"
 cmd1="/bin/apt update"
 cmd2="/bin/apt-get install apache2 net-tools sudo git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
