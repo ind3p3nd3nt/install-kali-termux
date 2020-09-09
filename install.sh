@@ -337,7 +337,7 @@ function fix_sudo() {
    else 
    chmod +s $CHROOT/usr/bin/sudo 
    fi
-   if [ ! -f "$CHROOT/usr/bin/su" ]; then proot -r $CHROOT "apt install busybox -y"; else chmod +s $CHROOT/usr/bin/su; fi
+   if [ ! -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
    if [ ! -f "$CHROOT/etc/sudoers.d/${USERNAME}" ]; then echo "${USERNAME}    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/${USERNAME} && echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers; fi
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
