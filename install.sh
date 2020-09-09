@@ -421,7 +421,7 @@ update
 remote
 nh -r /sbin/useradd -m $USERNAME
 echo "127.0.0.1     Offensive-Security.com" > $CHROOT/etc/hosts
-echo "::1     Offensive-Security.com" > $CHROOT/etc/hosts
+echo "::1     Offensive-Security.com" >> $CHROOT/etc/hosts
 cleanup
 fix_profile_bash
 fix_sudo
