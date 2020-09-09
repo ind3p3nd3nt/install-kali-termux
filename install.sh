@@ -170,7 +170,7 @@ unset LD_PRELOAD
 user="root"
 home="/root"
 cmd1="/bin/apt update"
-cmd2="/bin/apt-get install busybox sudo kali-tools. -y"
+cmd2="/bin/apt-get install busybox sudo kali-menu kali-tools. -y"
 cmd3="/bin/apt full-upgrade -y"
 cmd4="/bin/apt auto-remove -y"
 nh -r \$cmd1;
