@@ -315,8 +315,8 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-   if [ ! -f "$CHROOT/usr/bin/sudo" ]; then export HOME="/root"; export USER=root; LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup apt install sudo -y; else chmod +s $CHROOT/usr/bin/sudo; fi
-   if [ ! -f "$CHROOT/usr/bin/su" ]; then export HOME="/root"; export USER=root; LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup apt install busybox -y; else chmod +s $CHROOT/usr/bin/su; fi
+   if [ ! -f "$CHROOT/usr/bin/sudo" ]; then proot --link2symlink apt install sudo -y; else chmod +s $CHROOT/usr/bin/sudo; fi
+   if [ ! -f "$CHROOT/usr/bin/su" ]; then proot --link2symlink apt install busybox -y; else chmod +s $CHROOT/usr/bin/su; fi
    if [ ! -f "$CHROOT/etc/sudoers.d/${USERNAME}" ]; then echo "${USERNAME}    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/${USERNAME} && echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers; fi
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
