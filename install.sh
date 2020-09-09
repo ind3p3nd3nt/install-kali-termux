@@ -451,8 +451,8 @@ if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd $USERNAME; fi
 if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /bin/mkdir /home/${USERNAME}; fi
 if [ ! -d ${CHROOT}/home/${USERNAME}/Desktop/ ]; then nh -r /bin/mkdir /home/${USERNAME}/Desktop/; fi
 if [ ! -d ${CHROOT}/home/${USERNAME}/.vnc ]; then nh -r /bin/mkdir /home/${USERNAME}/.vnc; fi
-echo 'lxsession &' > $CHROOT/${home}/.vnc/xstartup;
-echo 'lxterminal &' >> $CHROOT/${home}/.vnc/xstartup;
+echo 'lxsession &' > ${CHROOT}/home/${USERNAME}/.vnc/xstartup;
+echo 'lxterminal &' >> ${CHROOT}/home/${USERNAME}/.vnc/xstartup;
 echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
 echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
 cleanup
