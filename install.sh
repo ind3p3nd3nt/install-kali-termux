@@ -183,9 +183,10 @@ function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
     cat > $NH_REMOTE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
+cd \${HOME}
 unset LD_PRELOAD
 user="n3thunt3r"
-home="/home/n3thunt3r"
+home="/home/\$user"
 nh -r /bin/mkdir \${home}/.vnc;
 nh -r /bin/echo 'lxsession &' > \${home}/.vnc/xstartup;
 nh -r /bin/echo 'lxterminal &' >> \${home}/.vnc/xstartup;
