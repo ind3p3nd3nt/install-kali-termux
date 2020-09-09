@@ -173,13 +173,36 @@ if [ ! -f $CHROOT/root/.version ]; then
 fi
 user="root"
 home="/\$user"
-cmd1="proot --link2symlink apt update"
-cmd2="proot --link2symlink apt-get install busybox sudo kali-tools. -y"
-cmd3="proot --link2symlink apt full-upgrade -y"
-\$cmd1 && \$cmd2 && \$cmd3;
+cmd1="apt update"
+cmd2="apt-get install busybox sudo kali-tools. -y"
+cmd3="apt full-upgrade -y"
+cmd4="apt auto-remove -y"
+char="'"
+wholecmd="$cmd1 && $cmd2 && $cmd3 && $cmd4"
+cmdline="proot \\
+        --link2symlink \\
+        -0 \\
+        -r $CHROOT \\
+        -b /dev \\
+        -b /proc \\
+        -b $CHROOT\$home:/dev/shm \\
+        -w \$home \\
+           /usr/bin/env -i \\
+           HOME=\$home \\
+           PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
+           TERM=\$TERM \\
+           LANG=C.UTF-8 \\
+           ${char}\$wholecmd${char}"
+cmd="\$@"
+if [ "\$#" == "0" ]; then
+    exec \$cmdline
+else
+    \$cmdline -c "\$cmd"
+fi
 EOF
     chmod +x $NH_UPDATE  
 }
+
 
 function create_launcher() {
     NH_LAUNCHER=${PREFIX}/bin/nethunter
