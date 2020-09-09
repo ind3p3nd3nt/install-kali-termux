@@ -189,18 +189,11 @@ function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
     cat > $NH_REMOTE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
-cd \${HOME}
-## termux-exec sets LD_PRELOAD so let's unset it before continuing
-unset LD_PRELOAD
-## Workaround for Libreoffice, also needs to bind a fake /proc/version
-if [ ! -f $CHROOT/root/.version ]; then
-    touch $CHROOT/root/.version
-fi
 user="root"
-home="/\$user"
-nh -r mkdir ~/.vnc;
-nh -r echo 'lxsession &' >~/.vnc/xstartup;
-nh -r echo 'lxterminal &' >>~/.vnc/xstartup;
+home="/root"
+nh -r mkdir /root/.vnc;
+nh -r echo 'lxsession &' >/root/.vnc/xstartup;
+nh -r echo 'lxterminal &' >>/root/.vnc/xstartup;
 nh -r apt update && apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 nh -r rm -rf /tmp/.X3-lock;
 nh -r vncserver -kill :3;
@@ -288,7 +281,7 @@ function create_kex_launcher() {
 #!/bin/bash
 
 function start-kex() {
-    if [ ! -f ~/.vnc/passwd ]; then
+    if [ ! -f /root/.vnc/passwd ]; then
         passwd-kex
     fi
     USR=\$(whoami)
