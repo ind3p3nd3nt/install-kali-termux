@@ -161,8 +161,8 @@ function extract_rootfs() {
 }
 
 function update() {
-NH_UPDATE=${PREFIX}/bin/upd
-cat > $NH_UPDATE <<- EOF
+    NH_UPDATE=${PREFIX}/bin/upd
+    cat > $NH_UPDATE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
@@ -367,9 +367,10 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-   if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; fi
-   if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
-   if [ ! -f "$CHROOT/etc/sudoers.d/$USERNAME" ]; then mkdir $CHROOT/etc/sudoers.d/ && echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/$USERNAME; fi
+    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r /bin/apt update && nh -r /bin/apt install sudo busybox -y; fi
+    if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
+    if [ ! -d "$CHROOT/etc/sudoers.d/" ]; then mkdir $CHROOT/etc/sudoers.d/; fi
+    if [ ! -f "$CHROOT/etc/sudoers.d/$USERNAME" ]; then echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/$USERNAME; fi
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
