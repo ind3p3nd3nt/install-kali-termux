@@ -191,7 +191,9 @@ fi
 if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];then
     user="root"
     home="/\$user"
-    cmd1="apt update && apt-get install busybox sudo kali-tools. -y && apt full-upgrade -y"
+    cmd1="apt update"
+    cmd2="apt-get install busybox sudo kali-tools. -y"
+    cmd3="apt full-upgrade -y"
     start="/bin/bash --login"
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]];then
         shift
@@ -212,6 +214,8 @@ cmdline="proot \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
            \$cmd1 \\
+           \$cmd2 \\
+           \$cmd3 \\
            \$start"
 
 cmd="\$@"
