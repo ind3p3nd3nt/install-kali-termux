@@ -217,12 +217,12 @@ home="/\$user"
 nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 user="n3thunt3r"
 home="/home/\$user"
-if [ ! -d $CHROOT/home/\$user ]; then nh -r /bin/mkdir ${home}; fi
-if [ ! -d $CHROOT/home/\${user}/Desktop/ ]; then nh -r /bin/mkdir ${home}/Desktop/; fi
-if [ ! -d $CHROOT/\${home}/.vnc ]; then nh -r /bin/mkdir \${home}/.vnc; fi
-echo 'lxsession &' > $CHROOT/\${home}/.vnc/xstartup;
-echo 'lxterminal &' >> $CHROOT/\${home}/.vnc/xstartup;
-if [ -f $CHROOT/tmp/.X3-lock ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+if [ ! -d \$CHROOT/\${home} ]; then nh -r /bin/mkdir \${home}; fi
+if [ ! -d \$CHROOT/\${home}/Desktop/ ]; then nh -r /bin/mkdir \${home}/Desktop/; fi
+if [ ! -d \$CHROOT/\${home}/.vnc ]; then nh -r /bin/mkdir \${home}/.vnc; fi
+echo 'lxsession &' > \$CHROOT/\${home}/.vnc/xstartup;
+echo 'lxterminal &' >> \$CHROOT/\${home}/.vnc/xstartup;
+if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 nh -r /bin/vncserver :3 -localhost no;
 nh -r echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 nh -r export myip=\$(ifconfig wlan0 | grep inet) && nh -r echo "Your Phone IP address: \$myip";
