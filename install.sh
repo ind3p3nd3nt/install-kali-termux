@@ -164,6 +164,7 @@ function update() {
 NH_UPDATE=${PREFIX}/bin/upd
 cat > $NH_UPDATE <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
+cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
 ## Workaround for Libreoffice, also needs to bind a fake /proc/version
