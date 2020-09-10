@@ -11,3 +11,6 @@ chmod +x install_kali
 ```
 #### Short link to this page:
 https://is.gd/kalitermux
+
+## NEW:
+### Support for x86 and AMD64 added; now you can install kali in an Android emulator!
