@@ -166,7 +166,8 @@ function verify_sha() {
 function extract_rootfs() {
     if [ -z $KEEP_CHROOT ]; then
         printf "\n${blue}[*] Extracting rootfs... ${reset}\n\n"
-        proot --link2symlink tar -xf $IMAGE_NAME 2> /dev/null || :
+        if [ ! -d "$CHROOT" ]; then mkdir $CHROOT; fi
+        tar vxf $IMAGE_NAME $CHROOT
     else        
         printf "${yellow}[!] Using existing rootfs directory${reset}\n"
     fi
