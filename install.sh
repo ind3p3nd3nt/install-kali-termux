@@ -53,7 +53,7 @@ function get_arch() {
     printf "${blue}[*] Checking device architecture ..."
     archcase=$(getprop ro.product.cpu.abi)
     if [ -z "$archcase" ]; then archcase=$(uname -m); fi
-    case  in
+    case $archcase in
         arm64-v8a)
             SYS_ARCH=arm64
             ;;
