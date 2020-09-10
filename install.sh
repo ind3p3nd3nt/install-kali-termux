@@ -63,7 +63,7 @@ function get_arch() {
         x86_64)
             SYS_ARCH=amd64
             ;;
-        i386)
+        i386|i686)
             SYS_ARCH=i386
             ;;
         *)
