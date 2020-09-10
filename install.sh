@@ -167,7 +167,7 @@ function extract_rootfs() {
     if [ -z $KEEP_CHROOT ]; then
         printf "\n${blue}[*] Extracting rootfs... ${reset}\n\n"
         if [ ! -d "$CHROOT" ]; then mkdir $CHROOT; fi
-        proot --link2symlink tar vxfJ $IMAGE_NAME -C $CHROOT || :
+        proot --link2symlink tar vxfJ $IMAGE_NAME -C $CHROOT 2> /dev/null || :
     else        
         printf "${yellow}[!] Using existing rootfs directory${reset}\n"
     fi
