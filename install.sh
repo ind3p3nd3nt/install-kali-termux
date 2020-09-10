@@ -6,6 +6,8 @@ VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=n3thunt3r
 
+
+
 function unsupported_arch() {
     printf "${red}"
     echo "[*] Unsupported Architecture\n\n"
@@ -49,12 +51,20 @@ function ask() {
 
 function get_arch() {
     printf "${blue}[*] Checking device architecture ..."
-    case $(getprop ro.product.cpu.abi) in
+    archcase=$(getprop ro.product.cpu.abi)
+    if [ -z "$archcase" ]; then archcase=$(uname -m); fi
+    case  in
         arm64-v8a)
             SYS_ARCH=arm64
             ;;
         armeabi|armeabi-v7a)
             SYS_ARCH=armhf
+            ;;
+        x86_64)
+            SYS_ARCH=amd64
+            ;;
+        i386)
+            SYS_ARCH=i386
             ;;
         *)
             unsupported_arch
@@ -197,7 +207,7 @@ cmd5="service apache2 start"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
-if [ -d ${CHROOT}/root/mollyweb ]; then rm -rf ${CHROOT}/root/mollyweb; fi
+if [ -d "\${CHROOT}/root/mollyweb" ]; then rm -rf \${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
 echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
 echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
@@ -300,81 +310,6 @@ EOF
    
 }
 
-function create_kex_launcher() {
-    KEX_LAUNCHER=${CHROOT}/usr/bin/kex
-    cat > $KEX_LAUNCHER <<- EOF
-#!/bin/bash
-
-function start-kex() {
-    if [ ! -f /root/.vnc/passwd ]; then
-        passwd-kex
-    fi
-    USR=\$(whoami)
-    if [ \$USR == "root" ]; then
-        SCREEN=":2"
-    else
-        SCREEN=":1"
-    fi 
-    export HOME=\${HOME}; export USER=\${USR}; LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver -localhost no \$SCREEN >/dev/null 2>&1 </dev/null
-    starting_kex=1
-    return 0
-}
-
-function stop-kex() {
-    vncserver -kill :1 | sed s/"Xtigervnc"/"NetHunter KeX"/
-    vncserver -kill :2 | sed s/"Xtigervnc"/"NetHunter KeX"/
-    return $?
-}
-
-function passwd-kex() {
-    vncpasswd
-    return $?
-}
-
-function status-kex() {
-    sessions=\$(vncserver -list | sed s/"TigerVNC"/"NetHunter KeX"/)
-    if [[ \$sessions == *"590"* ]]; then
-        printf "\n\${sessions}\n"
-        printf "\nYou can use the KeX client to connect to any of these displays.\n\n"
-    else
-        if [ ! -z \$starting_kex ]; then
-            printf '\nError starting the KeX server.\nPlease try "nethunter kex kill" or restart your termux session and try again.\n\n'
-        fi
-    fi
-    return 0
-}
-
-function kill-kex() {
-    pkill Xtigervnc
-    return \$?
-}
-
-case \$1 in
-    start)
-        start-kex
-        ;;
-    stop)
-        stop-kex
-        ;;
-    status)
-        status-kex
-        ;;
-    passwd)
-        passwd-kex
-        ;;
-    kill)
-        kill-kex
-        ;;
-    *)
-        stop-kex
-        start-kex
-        status-kex
-        ;;
-esac
-EOF
-
-    chmod 700 $KEX_LAUNCHER
-}
 
 function fix_profile_bash() {
     ## Prevent attempt to create links in read only filesystem
@@ -462,15 +397,11 @@ echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecur
 cleanup
 fix_profile_bash
 fix_sudo
-create_kex_launcher
 fix_uid
 print_banner
 printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
 printf "${green}[+] To start NetHunter, type:${reset}\n"
 printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
-printf "${green}[+] nethunter kex passwd  # To set the KeX password${reset}\n"
-printf "${green}[+] nethunter kex &       # To start NetHunter gui${reset}\n"
-printf "${green}[+] nethunter kex stop    # To stop NetHunter gui${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install all kali-tools${reset}\n\n"
