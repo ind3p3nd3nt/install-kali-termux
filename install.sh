@@ -253,6 +253,7 @@ cd \${HOME}
 unset LD_PRELOAD
 ## Workaround for Libreoffice, also needs to bind a fake /proc/version
 if [ ! -f $CHROOT/root/.version ]; then
+    if [ ! -d $CHROOT/root/ ]; then mkdir $CHROOT/root/; fi
     touch $CHROOT/root/.version
 fi
 
