@@ -201,7 +201,7 @@ unset LD_PRELOAD
 user="root"
 home="/\$user"
 cmd1="/bin/apt update"
-cmd2="/bin/apt-get install apache2 net-tools sudo git -y"
+cmd2="/bin/apt-get install apache2 wget net-tools sudo git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
 cmd5="service apache2 start"
