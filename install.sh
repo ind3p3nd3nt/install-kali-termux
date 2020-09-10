@@ -60,10 +60,10 @@ function get_arch() {
         armeabi|armeabi-v7a)
             SYS_ARCH=armhf
             ;;
-        x86_64)
+        x86_64|amd64)
             SYS_ARCH=amd64
             ;;
-        i386|i686)
+        i386|i686|x86)
             SYS_ARCH=i386
             ;;
         *)
