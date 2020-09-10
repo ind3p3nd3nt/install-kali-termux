@@ -167,7 +167,7 @@ function extract_rootfs() {
     if [ -z $KEEP_CHROOT ]; then
         printf "\n${blue}[*] Extracting rootfs... ${reset}\n\n"
         if [ ! -d "$CHROOT" ]; then mkdir $CHROOT; fi
-        tar vxf $IMAGE_NAME $CHROOT
+        tar -vxfJ $IMAGE_NAME -C $CHROOT
     else        
         printf "${yellow}[!] Using existing rootfs directory${reset}\n"
     fi
