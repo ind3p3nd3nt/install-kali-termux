@@ -9,6 +9,20 @@ USERNAME=kalilinux
 PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apache2" ]; then echo apache2; else echo httpd; fi)
 
+if [ $PKGMAN = "apt" ]; then 
+	sudo apt remove --purge proot axel -y
+	echo "Backing up sources.list"
+	cp /etc/apt/sources.list sources.list.bak -r
+	echo "Adding Termux Sources"
+	echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C
+	echo "Updating... and installing required tools"
+	apt update
+	apt install proot axel -y;
+	echo "Restoring original sources.list"
+	cp sources.list.bak /etc/apt/sources.list -r;
+fi
+
 function unsupported_arch() {
     printf "${red}"
     echo "[*] Unsupported Architecture\n\n"
