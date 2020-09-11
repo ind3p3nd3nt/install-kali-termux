@@ -9,7 +9,7 @@ USERNAME=kalilinux
 PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apache2" ]; then echo apache2; else echo httpd; fi)
 if [ -f "/bin/getprop" ]; then getprop="1"; fi
-if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi)
+if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi		
 
 if [ $PKGMAN = "apt" ]; then 
