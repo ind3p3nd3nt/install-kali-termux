@@ -4,7 +4,7 @@
 # This script is to install NetHunter on other Linux devices than an Android (on CentOS for example) 
 # It's currently in BETA stage and under developpment use at your own risk it might contain bugs
 
-#### Open termux and paste this code to install kali on it:
+#### Open terminal and paste this code to install kali on it:
 ```bash
 pkg install wget -y 
 wget -O install_kali https://git.io/JUWt0
