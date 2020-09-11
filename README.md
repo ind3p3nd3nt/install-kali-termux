@@ -11,3 +11,6 @@ wget -O install_kali https://is.gd/kaliuniverse
 chmod +x install_kali
 ./install_kali
 ```
+<p align="center">
+  <img width="460" height="300" src="https://github.com/independentcod/install-kali-termux/blob/universe-BETA/Screenshot_20200911_050411.jpg?raw=true">
+</p>
