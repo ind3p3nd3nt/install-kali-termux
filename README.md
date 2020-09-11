@@ -6,10 +6,8 @@
 
 #### Open terminal and paste this code to install kali on it:
 ```bash
-pkg install wget -y 
-wget -O install_kali https://git.io/JUWOu
+apt install wget -y 
+wget -O install_kali https://is.gd/kaliuniverse
 chmod +x install_kali
 ./install_kali
 ```
-#### Short link to this page:
-https://is.gd/kaliuniverse
