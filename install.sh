@@ -140,7 +140,7 @@ function check_dependencies() {
             }
         fi
     done
-    ${PKGMAN} upgrade -y
+    cp -r sources.list.bak /etc/apt/sources.list;
 }
 
 
