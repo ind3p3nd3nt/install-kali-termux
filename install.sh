@@ -5,8 +5,8 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
-PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
-HTTPD=$(if [ -f "/bin/apt" ]; then echo apache2; else echo httpd; fi)
+PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo apt; else echo yum; fi)
+HTTPD=$(if [ -f "/usr/bin/apt" ]; then echo apache2; else echo httpd; fi)
 if [ -f "/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi	
@@ -47,10 +47,8 @@ if [ $PKGMAN = "apt" ]; then
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
 	echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
-fi
-
-if [ $PKGMAN = "yum" ]; then 
 	yum install wget curl epel-release axel -y
+else
 	cd /etc/yum.repos.d/
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
     yum install proot -y
