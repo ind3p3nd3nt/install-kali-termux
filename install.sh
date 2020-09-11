@@ -15,9 +15,21 @@ if [ -z "$archcase" ]; then archcase=$(uname -m); fi
 if [ $PKGMAN = "apt" ]; then 
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
-	echo "Adding Termux Sources"
+	echo "Adding Termux & Kali Sources"
 	echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
+	echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
+fi
+
+if [ $PKGMAN = "yum" ]; then 
+	yum install wget alien -y
+	wget http://ftp.br.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3_${archcase}.deb
+	alien -r proot_5.1.0-1.3_${archcase}.deb
+	rpm -i proot_5.1.0-1.3_${archcase}.rpm
+        wget http://ftp.us.debian.org/debian/pool/main/a/axel/axel_2.17.9-1_${archcase}.deb
+	alien -r axel_2.17.9-1_${archcase}.deb
+	rpm -i axel_2.17.9-1_${archcase}.rpm;
 fi
 
 function unsupported_arch() {
