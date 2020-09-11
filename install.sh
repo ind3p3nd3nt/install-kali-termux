@@ -51,13 +51,10 @@ if [ $PKGMAN = "apt" ]; then
 fi
 
 if [ $PKGMAN = "yum" ]; then 
-	yum install wget epel-release alien -y
+	yum install wget epel-release alien axel libcrypt* openssl-devel -y
 	wget http://ftp.br.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3_${SYS_ARCH}.deb
 	alien -r proot_5.1.0-1.3_${SYS_ARCH}.deb
-	rpm -i rpm -i proot-5.1.0-2.3.${archcase}.rpm
-	wget http://ftp.us.debian.org/debian/pool/main/a/axel/axel_2.17.9-1_${SYS_ARCH}.deb
-	alien -r axel_2.17.9-1_${SYS_ARCH}.deb
-	rpm -i axel-2.17.9-2.${archcase}.rpm;
+	rpm -i rpm -i proot-5.1.0-2.3.${archcase}.rpm;
 fi
 
 
