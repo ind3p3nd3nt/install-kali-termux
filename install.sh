@@ -8,6 +8,7 @@ BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apt" ]; then echo apache2; else echo httpd; fi)
+get_arch;
 if [ -f "/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi		
@@ -24,12 +25,12 @@ fi
 
 if [ $PKGMAN = "yum" ]; then 
 	yum install wget alien -y
-	wget http://ftp.br.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3_${archcase}.deb
-	alien -r proot_5.1.0-1.3_${archcase}.deb
-	rpm -i proot_5.1.0-1.3_${archcase}.rpm
-        wget http://ftp.us.debian.org/debian/pool/main/a/axel/axel_2.17.9-1_${archcase}.deb
-	alien -r axel_2.17.9-1_${archcase}.deb
-	rpm -i axel_2.17.9-1_${archcase}.rpm;
+	wget http://ftp.br.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3_${SYS_ARCH}.deb
+	alien -r proot_5.1.0-1.3_${SYS_ARCH}.deb
+	rpm -i proot_5.1.0-1.3_${SYS_ARCH}.rpm
+    wget http://ftp.us.debian.org/debian/pool/main/a/axel/axel_2.17.9-1_${SYS_ARCH}.deb
+	alien -r axel_2.17.9-1_${SYS_ARCH}.deb
+	rpm -i axel_2.17.9-1_${SYS_ARCH}.rpm;
 fi
 
 function unsupported_arch() {
