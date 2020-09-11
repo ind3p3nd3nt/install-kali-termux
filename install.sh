@@ -11,6 +11,12 @@ HTTPD=$(if [ -f "/bin/apt" ]; then echo apache2; else echo httpd; fi)
 if [ -f "/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi	
+function unsupported_arch() {
+	printf "${red}"
+	echo "[*] Unsupported Architecture\n\n"
+	printf "${reset}"
+	exit
+}
 function get_arch() {
     printf "${blue}[*] Checking device architecture ..."
     case $archcase in
@@ -49,17 +55,11 @@ if [ $PKGMAN = "yum" ]; then
 	wget http://ftp.br.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3_${SYS_ARCH}.deb
 	alien -r proot_5.1.0-1.3_${SYS_ARCH}.deb
 	rpm -i proot_5.1.0-1.3_${SYS_ARCH}.rpm
-    wget http://ftp.us.debian.org/debian/pool/main/a/axel/axel_2.17.9-1_${SYS_ARCH}.deb
+	wget http://ftp.us.debian.org/debian/pool/main/a/axel/axel_2.17.9-1_${SYS_ARCH}.deb
 	alien -r axel_2.17.9-1_${SYS_ARCH}.deb
 	rpm -i axel_2.17.9-1_${SYS_ARCH}.rpm;
 fi
 
-function unsupported_arch() {
-    printf "${red}"
-    echo "[*] Unsupported Architecture\n\n"
-    printf "${reset}"
-    exit
-}
 
 function ask() {
     # http://djm.me/ask
