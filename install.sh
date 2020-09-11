@@ -54,7 +54,6 @@ if [ $PKGMAN = "yum" ]; then
 	yum install wget epel-release axel -y
 	cd /etc/yum.repos.d/
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-    yum update -y
     yum install proot -y
 fi
 
