@@ -8,6 +8,9 @@ BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apache2" ]; then echo apache2; else echo httpd; fi)
+if [ -f "/bin/getprop" ]; then getprop="1"; fi
+if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi)
+if [ -z "$archcase" ]; then archcase=$(uname -m); fi		
 
 if [ $PKGMAN = "apt" ]; then 
 	echo "Backing up sources.list"
@@ -60,8 +63,6 @@ function ask() {
 
 function get_arch() {
     printf "${blue}[*] Checking device architecture ..."
-    archcase=$(getprop ro.product.cpu.abi)
-    if [ -z "$archcase" ]; then archcase=$(uname -m); fi
     case $archcase in
         arm64-v8a)
             SYS_ARCH=arm64
@@ -176,7 +177,7 @@ function extract_rootfs() {
     if [ -z $KEEP_CHROOT ]; then
         printf "\n${blue}[*] Extracting rootfs... ${reset}\n\n"
         if [ ! -d "$CHROOT" ]; then mkdir $CHROOT; fi
-        tar vxfJ $IMAGE_NAME --keep-directory-symlink 2> /dev/null || :
+        $(if [ ! -z "$getprop" ]; then echo "proot --link2symlink"; fi) tar vxfJ $IMAGE_NAME $(if [ -z "$getprop" ]; then echo "--keep-directory-symlink"; fi) 2> /dev/null || :
     else        
         printf "${yellow}[!] Using existing rootfs directory${reset}\n"
     fi
