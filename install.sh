@@ -51,10 +51,12 @@ if [ $PKGMAN = "apt" ]; then
 fi
 
 if [ $PKGMAN = "yum" ]; then 
-	yum install wget epel-release axel -y
+	yum install wget curl epel-release axel -y
 	cd /etc/yum.repos.d/
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
     yum install proot -y
+    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-amd64-minimal.tar.xz
+    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-amd64-minimal.sha512sum
 fi
 
 
