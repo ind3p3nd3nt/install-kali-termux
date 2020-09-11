@@ -288,7 +288,6 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
 fi
 
 cmdline="proot \\
-        --link2symlink \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
