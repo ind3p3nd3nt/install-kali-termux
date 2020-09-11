@@ -241,7 +241,7 @@ nh -r ${PKGMAN} update && nh -r ${PKGMAN} install tigervnc-standalone-server lxd
 user="kalilinux"
 home="/home/\$user"
 if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
-nh /bin/vncserver :3 -localhost no&
+nh /bin/vncserver :3 -localhost no
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 ${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
