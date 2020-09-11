@@ -1,10 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
-# This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
+# This 		repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
 # I just added some stuff I thought it was cool. No hate, we are family.
 
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
-USERNAME=pwnphone
+USERNAME=kalilinux
 PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apache2" ]; then echo apache2; else echo httpd; fi)
 
@@ -180,10 +180,10 @@ function update() {
 unset LD_PRELOAD
 user="root"
 home="/root"
-cmd1="${PKGMAN} update"
-cmd2="${PKGMAN} install busybox sudo kali-menu kali-tools-top10 -y"
-cmd3="${PKGMAN} full-upgrade -y"
-cmd4="${PKGMAN} auto-remove -y"
+cmd1="\${PKGMAN} update"
+cmd2="\${PKGMAN} install busybox sudo kali-menu kali-tools-top10 -y"
+cmd3="\${PKGMAN} full-upgrade -y"
+cmd4="\${PKGMAN} auto-remove -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
@@ -214,7 +214,7 @@ nh -r \$cmd4;
 echo "Listen 8088" > $CHROOT/etc/${HTTPD}/ports.conf;
 echo "Listen 8443 ssl" >> $CHROOT/etc/${HTTPD}/ports.conf;
 nh -r \$cmd5 &
-${PKGMAN} install net-tools -y;
+\${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
 echo "Your ${HTTPD} IP address: \${myip} port 8088 http and https port 8443";
 EOF
@@ -227,13 +227,13 @@ function remote() {
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 unset LD_PRELOAD
-nh -r ${PKGMAN} update && nh -r ${PKGMAN} install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
-user="pwnphone"
+nh -r \${PKGMAN} update && nh -r \${PKGMAN} install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
+user="kalilinux"
 home="/home/\$user"
 if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 nh /bin/vncserver :3 -localhost no&
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-${PKGMAN} install net-tools -y;
+\${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
 echo "Your Phone IP address: \$myip";
 EOF
@@ -256,9 +256,9 @@ if [ ! -f $CHROOT/root/.version ]; then
     touch $CHROOT/root/.version
 fi
 
-## Default user is "pwnphone"
-user="pwnphone"
-home="/home/pwnphone"
+## Default user is "kalilinux"
+user="kalilinux"
+home="/home/kalilinux"
 start="sudo -u $USERNAME /bin/bash"
 
 ## NH can be launched as root with the "-r" cmd attribute
