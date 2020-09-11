@@ -47,8 +47,8 @@ if [ $PKGMAN = "apt" ]; then
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
 	echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
-	yum install wget curl epel-release axel -y
 else
+	yum install wget curl epel-release axel -y
 	cd /etc/yum.repos.d/
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
     yum install proot -y
