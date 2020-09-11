@@ -1,16 +1,15 @@
-# install-kali-termux
-### Custom Kali installation based on the minimal file-system of the official nethunter repositories from Offensive Security, in termux without the need of having your device rooted. 
-### More functions were added than in the script provided by offensive security and I will add more when the time comes.
+# install-kali-termux (universe-BETA branch)
+# This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
+# Custom Kali installation based on the minimal file-system of the official nethunter repositories from Offensive Security, 
+# This script is to install NetHunter on other Linux devices than an Android (on CentOS for example) 
+# It's currently in BETA stage and under developpment use at your own risk it might contain bugs
 
 #### Open termux and paste this code to install kali on it:
 ```bash
 pkg install wget -y 
-wget -O install_kali https://git.io/JUnAD 
+wget -O install_kali https://git.io/JUWt0
 chmod +x install_kali
 ./install_kali
 ```
 #### Short link to this page:
-https://is.gd/kalitermux
-
-## NEW:
-### Support for x86 and AMD64 added; now you can install kali in an Android emulator!
+https://is.gd/kaliuniverse
