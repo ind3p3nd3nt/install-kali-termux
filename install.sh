@@ -51,7 +51,7 @@ if [ $PKGMAN = "apt" ]; then
 fi
 
 if [ $PKGMAN = "yum" ]; then 
-	yum install wget alien -y
+	yum install wget epel-release alien -y
 	wget http://ftp.br.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3_${SYS_ARCH}.deb
 	alien -r proot_5.1.0-1.3_${SYS_ARCH}.deb
 	rpm -i proot_5.1.0-1.3_${archcase}.rpm
