@@ -8,6 +8,9 @@ BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apt" ]; then echo apache2; else echo httpd; fi)
+if [ -f "/bin/getprop" ]; then getprop="1"; fi
+if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
+if [ -z "$archcase" ]; then archcase=$(uname -m); fi	
 function get_arch() {
     printf "${blue}[*] Checking device architecture ..."
     case $archcase in
@@ -29,9 +32,7 @@ function get_arch() {
     esac
 }
 get_arch;
-if [ -f "/bin/getprop" ]; then getprop="1"; fi
-if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
-if [ -z "$archcase" ]; then archcase=$(uname -m); fi		
+	
 
 if [ $PKGMAN = "apt" ]; then 
 	echo "Backing up sources.list"
