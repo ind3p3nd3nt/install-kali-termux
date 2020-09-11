@@ -53,8 +53,8 @@ else
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
     yum install proot -y
     cd ~;
-    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-amd64-minimal.tar.xz
-    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-amd64-minimal.sha512sum
+    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.tar.xz
+    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.sha512sum
 fi
 
 
@@ -408,8 +408,8 @@ create_launcher
 update
 remote
 webd
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd $USERNAME; fi
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /bin/mkdir /home/${USERNAME}; fi
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd -m $USERNAME; fi
+if [ ! -d ${CHROOT}/root ]; then nh -r /bin/mkdir /root}; fi
 if [ ! -d ${CHROOT}/root/Desktop/ ]; then nh -r /bin/mkdir /root/Desktop/; fi
 if [ ! -d ${CHROOT}/root/.vnc ]; then nh -r /bin/mkdir /root/.vnc; fi
 echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
