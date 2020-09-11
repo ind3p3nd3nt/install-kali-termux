@@ -51,10 +51,11 @@ if [ $PKGMAN = "apt" ]; then
 fi
 
 if [ $PKGMAN = "yum" ]; then 
-	yum install wget epel-release alien axel libcrypt* openssl-devel -y
-	wget http://ftp.br.debian.org/debian/pool/main/p/proot/proot_5.1.0-1.3_${SYS_ARCH}.deb
-	alien -r proot_5.1.0-1.3_${SYS_ARCH}.deb
-	rpm -i proot-5.1.0-2.3.${archcase}.rpm;
+	yum install wget epel-release axel -y
+	cd /etc/yum.repos.d/
+    curl -O https://copr.fedoraproject.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
+    yum update -y
+    yum install proot -y
 fi
 
 
