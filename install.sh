@@ -1,6 +1,7 @@
-#!/data/data/com.termux/files/usr/bin/bash -e
-# This 		repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
-# I just added some stuff I thought it was cool. No hate, we are family.
+#!/bin/bash
+# This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
+# This script is to install NetHunter on other Linux devices than an Android (on CentOS for example) 
+# It's currently in BETA stage and under developpment use at your own risk it might contain bugs
 
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
@@ -176,7 +177,7 @@ function extract_rootfs() {
 function update() {
     NH_UPDATE=${PREFIX}/bin/upd
     cat > $NH_UPDATE <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash
 unset LD_PRELOAD
 user="root"
 home="/root"
@@ -195,7 +196,7 @@ EOF
 function webd() {
     NH_WEBD=${PREFIX}/bin/webd
     cat > $NH_WEBD <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash
 cd \${HOME}
 unset LD_PRELOAD
 httpd
@@ -224,7 +225,7 @@ EOF
 function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
     cat > $NH_REMOTE <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash
 cd \${HOME}
 unset LD_PRELOAD
 nh -r \${PKGMAN} update && nh -r \${PKGMAN} install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
@@ -246,7 +247,7 @@ function create_launcher() {
     NH_LAUNCHER=${PREFIX}/bin/nethunter
     NH_SHORTCUT=${PREFIX}/bin/nh
     cat > $NH_LAUNCHER <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash
 cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
