@@ -2,7 +2,6 @@
 # This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
 # This script is to install NetHunter on other Linux devices than an Android (on CentOS for example) 
 # It's currently in BETA stage and under developpment use at your own risk it might contain bugs
-
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
@@ -55,6 +54,7 @@ if [ $PKGMAN = "yum" ]; then
 	cd /etc/yum.repos.d/
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
     yum install proot -y
+    cd ~;
     curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-amd64-minimal.tar.xz
     curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-amd64-minimal.sha512sum
 fi
