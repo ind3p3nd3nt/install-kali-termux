@@ -189,10 +189,10 @@ function update() {
 unset LD_PRELOAD
 user="root"
 home="/root"
-cmd1="\${PKGMAN} update"
-cmd2="\${PKGMAN} install busybox sudo kali-menu kali-tools-top10 -y"
-cmd3="\${PKGMAN} full-upgrade -y"
-cmd4="\${PKGMAN} auto-remove -y"
+cmd1="${PKGMAN} update"
+cmd2="${PKGMAN} install busybox sudo kali-menu kali-tools-top10 -y"
+cmd3="${PKGMAN} full-upgrade -y"
+cmd4="${PKGMAN} auto-remove -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
@@ -223,7 +223,7 @@ nh -r \$cmd4;
 echo "Listen 8088" > $CHROOT/etc/${HTTPD}/ports.conf;
 echo "Listen 8443 ssl" >> $CHROOT/etc/${HTTPD}/ports.conf;
 nh -r \$cmd5 &
-\${PKGMAN} install net-tools -y;
+${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
 echo "Your ${HTTPD} IP address: \${myip} port 8088 http and https port 8443";
 EOF
@@ -236,13 +236,13 @@ function remote() {
 #!/bin/bash
 cd \${HOME}
 unset LD_PRELOAD
-nh -r \${PKGMAN} update && nh -r \${PKGMAN} install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
+nh -r ${PKGMAN} update && nh -r ${PKGMAN} install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 user="kalilinux"
 home="/home/\$user"
 if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 nh /bin/vncserver :3 -localhost no&
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-\${PKGMAN} install net-tools -y;
+${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
 echo "Your Phone IP address: \$myip";
 EOF
