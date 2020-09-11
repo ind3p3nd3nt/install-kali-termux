@@ -8,6 +8,26 @@ BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apt" ]; then echo apache2; else echo httpd; fi)
+function get_arch() {
+    printf "${blue}[*] Checking device architecture ..."
+    case $archcase in
+        arm64-v8a)
+            SYS_ARCH=arm64
+            ;;
+        armeabi|armeabi-v7a)
+            SYS_ARCH=armhf
+            ;;
+        x86_64|amd64)
+            SYS_ARCH=amd64
+            ;;
+        i386|i686|x86)
+            SYS_ARCH=i386
+            ;;
+        *)
+            unsupported_arch
+            ;;
+    esac
+}
 get_arch;
 if [ -f "/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
@@ -74,26 +94,6 @@ function ask() {
     done
 }
 
-function get_arch() {
-    printf "${blue}[*] Checking device architecture ..."
-    case $archcase in
-        arm64-v8a)
-            SYS_ARCH=arm64
-            ;;
-        armeabi|armeabi-v7a)
-            SYS_ARCH=armhf
-            ;;
-        x86_64|amd64)
-            SYS_ARCH=amd64
-            ;;
-        i386|i686|x86)
-            SYS_ARCH=i386
-            ;;
-        *)
-            unsupported_arch
-            ;;
-    esac
-}
 
 function set_strings() {
     CHROOT=kali-${SYS_ARCH}
