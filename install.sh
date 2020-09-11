@@ -5,8 +5,8 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=pwnphone
-
-
+PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
+HTTPD=$(if [ -f "/bin/apache2" ]; then echo apache2; else echo httpd; fi)
 
 function unsupported_arch() {
     printf "${red}"
@@ -104,20 +104,20 @@ function cleanup() {
 
 function check_dependencies() {
     printf "${blue}\n[*] Checking package dependencies...${reset}\n"
-    apt update -y &> /dev/null
+    ${PKGMAN} update -y &> /dev/null
 
     for i in proot tar axel; do
         if [ -e $PREFIX/bin/$i ]; then
             echo "  $i is OK"
         else
             printf "Installing ${i}...\n"
-            apt install -y $i || {
+            ${PKGMAN} install -y $i || {
                 printf "${red}ERROR: Failed to install packages.\n Exiting.\n${reset}"
             exit
             }
         fi
     done
-    apt upgrade -y
+    ${PKGMAN} upgrade -y
 }
 
 
@@ -180,10 +180,10 @@ function update() {
 unset LD_PRELOAD
 user="root"
 home="/root"
-cmd1="/bin/apt update"
-cmd2="/bin/apt-get install busybox sudo kali-menu kali-tools. -y"
-cmd3="/bin/apt full-upgrade -y"
-cmd4="/bin/apt auto-remove -y"
+cmd1="${PKGMAN} update"
+cmd2="${PKGMAN} install busybox sudo kali-menu kali-tools-top10 -y"
+cmd3="${PKGMAN} full-upgrade -y"
+cmd4="${PKGMAN} auto-remove -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
@@ -198,24 +198,25 @@ function webd() {
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 unset LD_PRELOAD
+httpd
 user="root"
 home="/\$user"
-cmd1="/bin/apt update"
-cmd2="/bin/apt-get install apache2 wget net-tools sudo git -y"
+cmd1="${PKGMAN} update"
+cmd2="${PKGMAN} install ${HTTPD} wget net-tools sudo git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
-cmd5="service apache2 start"
+cmd5="service ${HTTPD} start"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
 if [ -d "\${CHROOT}/root/mollyweb" ]; then rm -rf \${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
-echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
-echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
+echo "Listen 8088" > $CHROOT/etc/${HTTPD}/ports.conf;
+echo "Listen 8443 ssl" >> $CHROOT/etc/${HTTPD}/ports.conf;
 nh -r \$cmd5 &
-pkg install net-tools -y;
+${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
-echo "Your apache2 IP address: \${myip} port 8088 http and https port 8443";
+echo "Your ${HTTPD} IP address: \${myip} port 8088 http and https port 8443";
 EOF
     chmod +x $NH_WEBD  
 }
@@ -226,13 +227,13 @@ function remote() {
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 unset LD_PRELOAD
-nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
+nh -r ${PKGMAN} update && nh -r ${PKGMAN} install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
 user="pwnphone"
 home="/home/\$user"
 if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 nh /bin/vncserver :3 -localhost no&
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-pkg install net-tools -y;
+${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
 echo "Your Phone IP address: \$myip";
 EOF
@@ -320,7 +321,7 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r /bin/apt update && nh -r /bin/apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
+    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r ${PKGMAN} update && nh -r ${PKGMAN} install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
     if [ ! -d "$CHROOT/etc/sudoers.d/" ]; then mkdir $CHROOT/etc/sudoers.d/; fi
     if [ ! -f "$CHROOT/etc/sudoers.d/$USERNAME" ]; then echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/$USERNAME; fi
@@ -381,7 +382,7 @@ get_rootfs
 get_sha
 verify_sha
 extract_rootfs
-printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
+printf "\n${blue}[*] Configuring NetHunter for $(uname -a) ...\n"
 create_launcher
 update
 remote
@@ -404,6 +405,6 @@ printf "${green}[+] To start NetHunter, type:${reset}\n"
 printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
-printf "${green}[+] upd                   # To update everything and install all kali-tools${reset}\n\n"
+printf "${green}[+] upd                   # To update everything and install top 10 Kali Linux tools${reset}\n\n"
 printf "${green}[+] remote &              # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template ${reset}\n\n"
