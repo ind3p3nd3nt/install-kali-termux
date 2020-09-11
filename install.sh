@@ -221,12 +221,12 @@ nh -r \$cmd2;
 nh -r \$cmd3;
 if [ -d "\${CHROOT}/root/mollyweb" ]; then rm -rf \${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
-echo "Listen 8088" > $CHROOT/etc/${HTTPD}/ports.conf;
-echo "Listen 8443 ssl" >> $CHROOT/etc/${HTTPD}/ports.conf;
-nh -r \$cmd5 &
 ${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
 echo "Your ${HTTPD} IP address: \${myip} port 8088 http and https port 8443";
+echo "Listen 8088" > $CHROOT/etc/${HTTPD}/ports.conf;
+echo "Listen 8443 ssl" >> $CHROOT/etc/${HTTPD}/ports.conf;
+nh -r \$cmd5 &
 EOF
     chmod +x $NH_WEBD  
 }
@@ -241,11 +241,11 @@ nh -r ${PKGMAN} update && nh -r ${PKGMAN} install tigervnc-standalone-server lxd
 user="kalilinux"
 home="/home/\$user"
 if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
-nh /bin/vncserver :3 -localhost no
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 ${PKGMAN} install net-tools -y;
 myip=\$(ifconfig wlan0 | grep inet) 
 echo "Your Phone IP address: \$myip";
+nh -r /bin/vncserver :3 -localhost no
 EOF
     chmod +x $NH_REMOTE  
 }
@@ -289,7 +289,7 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
 fi
 
 cmdline="proot \\
-	$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
+		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
         -0 \\
         -r $CHROOT \\
         -b /dev \\
@@ -399,10 +399,10 @@ remote
 webd
 if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd $USERNAME; fi
 if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /bin/mkdir /home/${USERNAME}; fi
-if [ ! -d ${CHROOT}/home/${USERNAME}/Desktop/ ]; then nh -r /bin/mkdir /home/${USERNAME}/Desktop/; fi
-if [ ! -d ${CHROOT}/home/${USERNAME}/.vnc ]; then nh -r /bin/mkdir /home/${USERNAME}/.vnc; fi
-echo 'lxsession &' > ${CHROOT}/home/${USERNAME}/.vnc/xstartup;
-echo 'lxterminal &' >> ${CHROOT}/home/${USERNAME}/.vnc/xstartup;
+if [ ! -d ${CHROOT}/root/Desktop/ ]; then nh -r /bin/mkdir /root/Desktop/; fi
+if [ ! -d ${CHROOT}/root/.vnc ]; then nh -r /bin/mkdir /root/.vnc; fi
+echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
+echo 'lxterminal &' >> ${CHROOT}/root/.vnc/xstartup;
 echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
 echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
 cleanup
@@ -416,5 +416,6 @@ printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install top 10 Kali Linux tools${reset}\n\n"
-printf "${green}[+] remote &              # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
+printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices and set password${reset}\n\n"
+printf "${green}[+] remote &              # To start the VNC server${reset}\n\n"
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template ${reset}\n\n"
