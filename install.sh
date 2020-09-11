@@ -10,17 +10,11 @@ PKGMAN=$(if [ -f "/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/bin/apache2" ]; then echo apache2; else echo httpd; fi)
 
 if [ $PKGMAN = "apt" ]; then 
-	sudo apt remove --purge proot axel -y
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
 	echo "Adding Termux Sources"
-	echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list
-	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C
-	echo "Updating... and installing required tools"
-	apt update
-	apt install proot axel -y;
-	echo "Restoring original sources.list"
-	cp sources.list.bak /etc/apt/sources.list -r;
+	echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
 fi
 
 function unsupported_arch() {
@@ -182,7 +176,7 @@ function extract_rootfs() {
     if [ -z $KEEP_CHROOT ]; then
         printf "\n${blue}[*] Extracting rootfs... ${reset}\n\n"
         if [ ! -d "$CHROOT" ]; then mkdir $CHROOT; fi
-        proot --link2symlink tar vxfJ $IMAGE_NAME 2> /dev/null || :
+        tar vxfJ $IMAGE_NAME --keep-directory-symlink 2> /dev/null || :
     else        
         printf "${yellow}[!] Using existing rootfs directory${reset}\n"
     fi
