@@ -9,7 +9,7 @@ PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; else echo "yum"; fi)
 if [ -f "/usr/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi
-
+cd ~;
 function print_banner() {
     clear
     printf "${blue}##################################################\n"
