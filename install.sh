@@ -344,7 +344,7 @@ fi
 
 cmdline="proot \\
 		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
-		-v 9 \\
+		-v 1 \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
