@@ -39,7 +39,7 @@ function get_arch() {
 get_arch;
 	
 
-if [ $PKGMAN = "apt" ]; then 
+if [ "$PKGMAN" = "sudo apt" ]; then 
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
 	echo "Adding Termux & Kali Sources"
