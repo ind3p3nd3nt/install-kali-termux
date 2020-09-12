@@ -344,7 +344,7 @@ function fix_sudo() {
     ## fix sudo & su on start
     if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
-    echo "sudo    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers;
+    echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers;
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     #echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
