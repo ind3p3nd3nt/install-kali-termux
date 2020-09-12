@@ -141,6 +141,8 @@ function check_dependencies() {
 		cd /etc/yum.repos.d/
 		curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
 		cd ~;
+		yum update
+		yum install net-tools
 	fi
     for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
@@ -286,7 +288,7 @@ if [ "\$1" = "install" ]; then
 	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
-	if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+	if [ -f "\$CHROOT/tmp/.X3-lock" ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 fi
 if [ "\$1" = "start" ]; then
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
@@ -313,9 +315,9 @@ cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
 ## Workaround for Libreoffice, also needs to bind a fake /proc/version
-if [ ! -f $CHROOT/root/.version ]; then
-    if [ ! -d $CHROOT/root/ ]; then mkdir $CHROOT/root/; fi
-    touch $CHROOT/root/.version
+if [ ! -f \$CHROOT/root/.version ]; then
+    if [ ! -d \$CHROOT/root/ ]; then mkdir \$CHROOT/root/; fi
+    touch \$CHROOT/root/.version
 fi
 
 ## Default user is "kalilinux"
@@ -325,7 +327,7 @@ start="sudo -u $USERNAME /bin/bash --login"
 
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
-if grep -q "$USERNAME" ${CHROOT}/etc/passwd; then
+if grep -q "\$USERNAME" \${CHROOT}/etc/passwd; then
     KALIUSR="1";
 else
     KALIUSR="0";
@@ -346,10 +348,10 @@ cmdline="proot \\
         -r $CHROOT \\
         -b /dev \\
         -b /proc \\
-        -b $CHROOT\$home:/dev/shm \\
+        -b \${CHROOT}\${home}:/dev/shm \\
         -w \$home \\
            /usr/bin/env -i \\
-           HOME=\$home \\
+           HOME=\${home} \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
