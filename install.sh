@@ -259,6 +259,7 @@ cmd4="sh lxde-wallpaperchanger/install.sh"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
+nr -r export DISPLAY=:3;
 nh -r \$cmd4;
 EOF
     chmod +x $NH_SEXY  
