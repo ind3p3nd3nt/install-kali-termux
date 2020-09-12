@@ -7,7 +7,7 @@ BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo apt; else echo yum; fi)
 HTTPD=$(if [ -f "/usr/bin/apt" ]; then echo apache2; else echo httpd; fi)
-if [ -f "/bin/getprop" ]; then getprop="1"; fi
+if [ -f "/usr/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi	
 function unsupported_arch() {
@@ -346,16 +346,16 @@ function fix_sudo() {
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
     if [ ! -d "$CHROOT/etc/sudoers.d/" ]; then mkdir $CHROOT/etc/sudoers.d/; fi
     if [ ! -f "$CHROOT/etc/sudoers.d/$USERNAME" ]; then echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/$USERNAME; fi
-    # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
-    echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
 
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
     USRID=$(id -u)
     GRPID=$(id -g)
-    nh -r usermod -u $USRID $USERNAME 2>/dev/null
-    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
+    if [ ! "$USRID" -eq 0 ]; then
+	    nh -r usermod -u $USRID $USERNAME 2>/dev/null
+	    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
+	fi
 }
 
 function print_banner() {
