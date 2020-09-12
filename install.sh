@@ -344,18 +344,20 @@ function fix_sudo() {
     ## fix sudo & su on start
     if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
-    echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers;
-    echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" >> $CHROOT/etc/sudoers;
+    useradd $USERNAME
+    usermod -u 1001 $USERNAME
+    runuser -l $USERNAME -c "echo root    ALL=(ALL:ALL) ALL > \$CHROOT/etc/sudoers"
+    runuser -l $USERNAME -c "echo %sudo    ALL=(ALL:ALL) NOPASSWD:ALL >> \$CHROOT/etc/sudoers"
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     #echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
 
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
-    USRID=$(id -u)
-    GRPID=$(id -g)
-    nh -r usermod -u $USRID $USERNAME 2>/dev/null
-    nh -r groupmod -g sudo $USERNAME 2>/dev/null
+    USRID=$(runuser -l $USERNAME -c "\$(id -u)")
+    GRPID=$(runuser -l $USERNAME -c "\$(id -g)")
+    nh -r usermod -g sudo $USERNAME 2>/dev/null
+    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
 }
 
 function print_banner() {
