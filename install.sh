@@ -241,28 +241,26 @@ EOF
     chmod +x $NH_WEBD  
 }
 
-##TODO
-#function sexywall() {
-#    NH_SEXY=${PREFIX}/bin/sexywall
-#    cat > $NH_SEXY <<- EOF
-##!/bin/bash
-#cd \${HOME}
-#unset LD_PRELOAD
-#user="root"
-#home="/\$user"
-#cmd1="apt update"
-#cmd2="apt install git pcmanfm -y"
-#cmd3="git clone https://github.com/independentcod/lxde-wallpaperchanger.git"
-#cmd4="sh lxde-wallpaperchanger/install.sh"
-####TO DO cmd5=""
-#nh -r \$cmd1;
-#nh -r \$cmd2;
-#nh -r \$cmd3;
-#nh -r \$cmd4;
-#nh -r \$cmd5 &
-#EOF
-#    chmod +x $NH_SEXY  
-#}
+
+function sexywall() {
+    NH_SEXY=${PREFIX}/bin/sexywall
+    cat > $NH_SEXY <<- EOF
+#!/bin/bash
+cd \${HOME}
+unset LD_PRELOAD
+user="root"
+home="/\$user"
+cmd1="apt update"
+cmd2="apt install git pcmanfm -y"
+cmd3="git clone https://github.com/independentcod/lxde-wallpaperchanger.git"
+cmd4="sh lxde-wallpaperchanger/install.sh"
+nh -r \$cmd1;
+nh -r \$cmd2;
+nh -r \$cmd3;
+nh -r \$cmd4;
+EOF
+    chmod +x $NH_SEXY  
+}
 
 
 function remote() {
@@ -437,7 +435,7 @@ create_launcher
 update
 remote
 webd
-#sexywall
+sexywall
 if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd -m $USERNAME; fi
 if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh /bin/mkdir /home/${USERNAME}; fi
 if [ ! -d ${CHROOT}/root/Desktop/ ]; then nh -r /bin/mkdir /root/Desktop/; fi
@@ -461,4 +459,4 @@ printf "${green}[+] upd                   # To update everything and install ALL
 printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices and set password${reset}\n\n"
 printf "${green}[+] remote &              # To start the VNC server${reset}\n\n"
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
-#printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
+printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
