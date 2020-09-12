@@ -43,15 +43,15 @@ if [ $PKGMAN = "apt" ]; then
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
 	echo "Adding Termux & Kali Sources"
-	echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
-	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
-	echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
-	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
+	sudo echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
+	sudo echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
 else
-	yum install wget curl epel-release axel -y
+	sudo yum install wget curl epel-release axel -y
 	cd /etc/yum.repos.d/
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-    yum install proot -y
+    sudo yum install proot -y
     cd ~;
     curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.tar.xz
     curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.sha512sum
@@ -124,21 +124,21 @@ function cleanup() {
 } 
 
 function check_dependencies() {
-    printf "${blue}\n[*] Checking package dependencies...${reset}\n"
-    ${PKGMAN} update -y &> /dev/null
+    printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
+    sudo ${PKGMAN} update -y &> /dev/null
 
     for i in proot tar axel; do
         if [ -e $PREFIX/bin/$i ]; then
             echo "  $i is OK"
         else
             printf "Installing ${i}...\n"
-            ${PKGMAN} install -y $i || {
+            sudo ${PKGMAN} install -y $i || {
                 printf "${red}ERROR: Failed to install packages.\n Exiting.\n${reset}"
             exit
             }
         fi
     done
-    cp -r sources.list.bak /etc/apt/sources.list;
+    sudo cp -r sources.list.bak /etc/apt/sources.list;
 }
 
 
@@ -344,10 +344,9 @@ function fix_sudo() {
     ## fix sudo & su on start
     if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
-    if [ ! -d "$CHROOT/etc/sudoers.d/" ]; then mkdir $CHROOT/etc/sudoers.d/; fi
-    if [ ! -f "$CHROOT/etc/sudoers.d/$USERNAME" ]; then echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/$USERNAME; fi
-        # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
-    echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
+    echo "sudo    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers;
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
+    #echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
 
 function fix_uid() {
@@ -355,8 +354,7 @@ function fix_uid() {
     USRID=$(id -u)
     GRPID=$(id -g)
     nh -r usermod -u $USRID $USERNAME 2>/dev/null
-    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
-    nh -r chown root:root /etc/sudoers /etc/sudoers.d /etc/sudo.conf -R 2>/dev/null
+    nh -r groupmod -g sudo $USERNAME 2>/dev/null
 }
 
 function print_banner() {
