@@ -271,14 +271,21 @@ function remote() {
 #!/bin/bash
 cd \${HOME}
 unset LD_PRELOAD
-nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
-user="kalilinux"
-home="/home/\$user"
-if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
-echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-myip=\$(ifconfig | grep inet) 
-echo "\$myip";
-nh -r /bin/vncserver :3 -localhost no
+if [ "\$1" = "install" ]; then
+	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
+fi
+if [ "\$1" = "stop" ]; then
+	if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+fi
+if [ "\$1" = "start" ]; then
+	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
+	myip=\$(ifconfig | grep inet) 
+	echo "\$myip";
+	nh -r /bin/vncserver :3 -localhost no&
+fi
+if [ "\$1" = "passwd" ]; then
+	nh -r vncpassswd;
+fi
 exit 0
 EOF
     chmod +x $NH_REMOTE  
@@ -456,7 +463,9 @@ printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
-printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices and set password${reset}\n\n"
-printf "${green}[+] remote &              # To start the VNC server${reset}\n\n"
-printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
+printf "${green}[+] remote install        # To install a LXDE Display Manager on port 5903 reachable by other devices and set password${reset}\n\n"
+printf "${green}[+] remote start          # To start the VNC server${reset}\n\n"
+printf "${green}[+] remote passwd         # To change the remote VNC password${reset}\n\n"
+printf "${green}[+] remote stop           # To stop the VNC server${reset}\n\n"
+printf "${green}[+] sexywall              # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
