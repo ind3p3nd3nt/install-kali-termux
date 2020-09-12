@@ -261,7 +261,7 @@ nh -r \$cmd2;
 nh -r \$cmd3;
 nr -r DISPLAY=:3;
 DISPLAY=:3;
-nh -r \$cmd4;
+nh -r \$cmd4&
 exit 0
 EOF
     chmod +x $NH_SEXY  
@@ -470,5 +470,5 @@ printf "${green}[+] remote install        # To install a LXDE Display Manager on
 printf "${green}[+] remote start          # To start the VNC server${reset}\n\n"
 printf "${green}[+] remote passwd         # To change the remote VNC password${reset}\n\n"
 printf "${green}[+] remote stop           # To stop the VNC server${reset}\n\n"
-printf "${green}[+] sexywall              # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
+printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
