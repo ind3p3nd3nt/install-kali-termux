@@ -47,6 +47,7 @@ if [ "$PKGMAN" = "sudo apt" ]; then
 	 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
 	 echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
+	apt install net-tools -y;
 else
 	yum install wget curl epel-release axel -y
 	cd /etc/yum.repos.d/
@@ -301,7 +302,7 @@ fi
 ## Default user is "kalilinux"
 user="kalilinux"
 home="/home/kalilinux"
-start="sudo -u $USERNAME /bin/bash"
+start="sudo -u $USERNAME /bin/bash --login"
 
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
