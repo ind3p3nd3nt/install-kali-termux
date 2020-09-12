@@ -255,13 +255,14 @@ home="/\$user"
 cmd1="apt update"
 cmd2="apt install git pcmanfm -y"
 cmd3="git clone https://github.com/independentcod/lxde-wallpaperchanger.git"
-cmd4="sh lxde-wallpaperchanger/install.sh"
+cmd4="sh lxde-wallpaperchanger/install.sh&"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
 nr -r DISPLAY=:3;
 DISPLAY=:3;
 nh -r \$cmd4;
+exit 0
 EOF
     chmod +x $NH_SEXY  
 }
