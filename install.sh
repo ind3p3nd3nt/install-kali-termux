@@ -43,19 +43,19 @@ if [ "$PKGMAN" = "apt" ]; then
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
 	echo "Adding Termux & Kali Sources"
-	 echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
-	 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
-	 echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
+	echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
+	echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
 	apt install net-tools -y;
 else
 	yum install wget curl epel-release axel -y
 	cd /etc/yum.repos.d/
-    curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-    yum install proot -y
-    cd ~;
-    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.tar.xz
-    curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.sha512sum
+	curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
+	yum install proot -y
+	cd ~;
+	curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.tar.xz
+	curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.sha512sum
 fi
 
 
@@ -210,6 +210,7 @@ nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
 nh -r \$cmd4;
+exit 0
 EOF
     chmod +x $NH_UPDATE  
 }
@@ -237,6 +238,7 @@ echo "\${myip} port 8088 http and https port 8443";
 echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
 echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
 nh -r \$cmd5 &
+exit 0
 EOF
     chmod +x $NH_WEBD  
 }
@@ -276,7 +278,8 @@ if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 myip=\$(ifconfig | grep inet) 
 echo "\$myip";
-nh -r /bin/vncserver :3 -localhost no
+nh -r /bin/vncserver :3 -localhost no&
+exit 0
 EOF
     chmod +x $NH_REMOTE  
 }
@@ -372,17 +375,13 @@ function fix_sudo() {
 
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
-    USRID=$(nh "\$(id -u)")
-    GRPID=$(nh "\$(id -g)")
-    useradd $USERNAME
+    GRPID=$(id -g)
     chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/usr/bin/sudo $CHROOT/etc/hosts 
     chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd /bin/sexywall ${CHROOT}/home/${USERNAME} -R
-    chown ${USERNAME}:${USERNAME} ${CHROOT}/home/${USERNAME} -R
     nh -r usermod -g sudo $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
-    cp -r /usr/sbin/ifconfig /usr/bin/ifconfig
-    chmod 777 /usr/bin/ifconfig
-    userdel -f $USERNAME
+    if [ -f "/usr/sbin/ifconfig" ]; then mv -f /usr/sbin/ifconfig /usr/bin/ifconfig; fi
+    chmod 777 /usr/bin/ifconfig;
 }
 
 function print_banner() {
@@ -458,5 +457,5 @@ printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
 printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices and set password${reset}\n\n"
 printf "${green}[+] remote &              # To start the VNC server${reset}\n\n"
-printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
+printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
