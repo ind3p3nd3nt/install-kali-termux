@@ -227,7 +227,7 @@ cmd1="apt update"
 cmd2="apt install apache2 wget sudo git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
-cmd5="service apache2 start"
+cmd5="apache2&"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
