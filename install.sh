@@ -376,12 +376,13 @@ function fix_sudo() {
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
     GRPID=$(id -g)
-    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/usr/bin/sudo $CHROOT/etc/hosts 
+    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/etc/hosts $CHROOT/usr/bin/sudo
     chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd /bin/sexywall ${CHROOT}/home/${USERNAME} -R
     nh -r usermod -g sudo $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
     if [ -f "/usr/sbin/ifconfig" ]; then mv -f /usr/sbin/ifconfig /usr/bin/ifconfig; fi
-    chmod 777 /usr/bin/ifconfig;
+    chmod 777 /usr/bin/ifconfig
+    nh -r chmod +sxr-w /usr/bin/sudo;
 }
 
 function print_banner() {
