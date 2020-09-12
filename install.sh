@@ -52,7 +52,7 @@ else
 	yum install wget curl epel-release axel -y
 	cd /etc/yum.repos.d/
 	curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-	yum install proot -y
+	yum install proot talloc. -y
 	cd ~;
 	curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.tar.xz
 	curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.sha512sum
