@@ -63,25 +63,6 @@ function get_url() {
 print_banner
 get_arch
 set_strings
-if [ "$PKGMAN" = "apt" ]; then 
-	echo "Backing up sources.list"
-	cp /etc/apt/sources.list sources.list.bak -r
-	echo "Adding Termux & Kali Sources"
-	echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
-	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
-	echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
-	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
-	apt install net-tools -y;
-else
-	set_strings
-	yum install curl uthash-devel libarchive-devel libarchive -y
-	cd /etc/yum.repos.d/
-	curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-	yum install proot libtalloc-devel -y
-	cd ~;
-fi
-
-
 function ask() {
     # http://djm.me/ask
     while true; do
@@ -141,9 +122,19 @@ function cleanup() {
 } 
 
 function check_dependencies() {
-    printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
-    ${PKGMAN} update -y &> /dev/null
-
+	printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
+	${PKGMAN} update -y &> /dev/null
+	if [ "$PKGMAN" = "apt" ]; then 
+		echo "Backing up sources.list"
+		cp /etc/apt/sources.list sources.list.bak -r
+		echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
+		apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
+		apt install net-tools -y;
+	else
+		cd /etc/yum.repos.d/
+		curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
+		cd ~;
+	fi
     for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
             echo "  $i is OK"
