@@ -127,7 +127,7 @@ function check_dependencies() {
     printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
     ${PKGMAN} update -y &> /dev/null
 
-    for i in proot tar axel net-tools; do
+    for i in proot tar axel; do
         if [ -e $PREFIX/bin/$i ]; then
             echo "  $i is OK"
         else
