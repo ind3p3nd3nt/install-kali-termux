@@ -43,15 +43,15 @@ if [ $PKGMAN = "apt" ]; then
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
 	echo "Adding Termux & Kali Sources"
-	sudo echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
-	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
-	sudo echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
-	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
+	 echo deb https://dl.bintray.com/termux/termux-packages-24/ stable main >/etc/apt/sources.list.d/termux.sources.list
+	 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5A897D96E57CF20C;
+	 echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
 else
-	sudo yum install wget curl epel-release axel -y
+	yum install wget curl epel-release axel -y
 	cd /etc/yum.repos.d/
     curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-    sudo yum install proot -y
+    yum install proot -y
     cd ~;
     curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.tar.xz
     curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.sha512sum
@@ -125,20 +125,20 @@ function cleanup() {
 
 function check_dependencies() {
     printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
-    sudo ${PKGMAN} update -y &> /dev/null
+    ${PKGMAN} update -y &> /dev/null
 
     for i in proot tar axel; do
         if [ -e $PREFIX/bin/$i ]; then
             echo "  $i is OK"
         else
             printf "Installing ${i}...\n"
-            sudo ${PKGMAN} install -y $i || {
+            ${PKGMAN} install -y $i || {
                 printf "${red}ERROR: Failed to install packages.\n Exiting.\n${reset}"
             exit
             }
         fi
     done
-    sudo cp -r sources.list.bak /etc/apt/sources.list;
+    cp -r sources.list.bak /etc/apt/sources.list;
 }
 
 
@@ -342,7 +342,7 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
+    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install kali-menu sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
     echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers;
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
