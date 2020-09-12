@@ -6,10 +6,25 @@ VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; else echo "yum"; fi)
-
 if [ -f "/usr/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
-if [ -z "$archcase" ]; then archcase=$(uname -m); fi	
+if [ -z "$archcase" ]; then archcase=$(uname -m); fi
+
+function print_banner() {
+    clear
+    printf "${blue}##################################################\n"
+    printf "${blue}##                                              ##\n"
+    printf "${blue}##  88      a8P         db        88        88  ##\n"
+    printf "${blue}##  88    .88'         d88b       88        88  ##\n"
+    printf "${blue}##  88   88'          d8''8b      88        88  ##\n"
+    printf "${blue}##  88 d88           d8'  '8b     88        88  ##\n"
+    printf "${blue}##  8888'88.        d8YaaaaY8b    88        88  ##\n"
+    printf "${blue}##  88P   Y8b      d8''''''''8b   88        88  ##\n"
+    printf "${blue}##  88     '88.   d8'        '8b  88        88  ##\n"
+    printf "${blue}##  88       Y8b d8'          '8b 888888888 88  ##\n"
+    printf "${blue}##            Forked by @independentcod         ##\n"
+    printf "${blue}################### NetHunter ####################${reset}\n\n"
+}	
 function unsupported_arch() {
 	printf "${red}"
 	echo "[*] Unsupported Architecture\n\n"
@@ -36,9 +51,18 @@ function get_arch() {
             ;;
     esac
 }
-get_arch;
-	
-
+function set_strings() {
+    CHROOT=kali-${SYS_ARCH}
+    IMAGE_NAME=kalifs-${SYS_ARCH}-minimal.tar.xz
+    SHA_NAME=kalifs-${SYS_ARCH}-minimal.sha512sum
+}  
+function get_url() {
+    ROOTFS_URL="${BASE_URL}/${IMAGE_NAME}"
+    SHA_URL="${BASE_URL}/${SHA_NAME}"
+}
+print_banner
+get_arch
+set_strings
 if [ "$PKGMAN" = "apt" ]; then 
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
@@ -49,13 +73,12 @@ if [ "$PKGMAN" = "apt" ]; then
 	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
 	apt install net-tools -y;
 else
-	yum install wget curl epel-release axel -y
+	set_strings
+	yum install curl uthash-devel libarchive-devel libarchive -y
 	cd /etc/yum.repos.d/
 	curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-	yum install proot talloc. -y
+	yum install proot libtalloc-devel -y
 	cd ~;
-	curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.tar.xz
-	curl -O https://build.nethunter.com/kalifs/kalifs-latest//kalifs-${SYS_ARCH}-minimal.sha512sum
 fi
 
 
@@ -91,14 +114,7 @@ function ask() {
             N*|n*) return 1 ;;
         esac
     done
-}
-
-
-function set_strings() {
-    CHROOT=kali-${SYS_ARCH}
-    IMAGE_NAME=kalifs-${SYS_ARCH}-minimal.tar.xz
-    SHA_NAME=kalifs-${SYS_ARCH}-minimal.sha512sum
-}    
+}  
 
 function prepare_fs() {
     unset KEEP_CHROOT
@@ -128,7 +144,7 @@ function check_dependencies() {
     printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
     ${PKGMAN} update -y &> /dev/null
 
-    for i in proot tar axel; do
+    for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
             echo "  $i is OK"
         else
@@ -140,12 +156,6 @@ function check_dependencies() {
         fi
     done
     cp -r sources.list.bak /etc/apt/sources.list;
-}
-
-
-function get_url() {
-    ROOTFS_URL="${BASE_URL}/${IMAGE_NAME}"
-    SHA_URL="${BASE_URL}/${SHA_NAME}"
 }
 
 function get_rootfs() {
@@ -161,7 +171,7 @@ function get_rootfs() {
     fi
     printf "${blue}[*] Downloading rootfs...${reset}\n\n"
     get_url
-    axel ${EXTRA_ARGS} --alternate "$ROOTFS_URL"
+    curl -O ${ROOTFS_URL}
 }
 
 function get_sha() {
@@ -171,7 +181,7 @@ function get_sha() {
         if [ -f ${SHA_NAME} ]; then
             rm -f ${SHA_NAME}
         fi
-        axel ${EXTRA_ARGS} --alternate "${SHA_URL}"
+        curl -O "${SHA_URL}"
     fi
 }
 
@@ -334,6 +344,7 @@ fi
 
 cmdline="proot \\
 		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
+		-v 9 \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
@@ -395,22 +406,6 @@ function fix_uid() {
     nh -r chmod +sxr-w /usr/bin/sudo;
 }
 
-function print_banner() {
-    clear
-    printf "${blue}##################################################\n"
-    printf "${blue}##                                              ##\n"
-    printf "${blue}##  88      a8P         db        88        88  ##\n"
-    printf "${blue}##  88    .88'         d88b       88        88  ##\n"
-    printf "${blue}##  88   88'          d8''8b      88        88  ##\n"
-    printf "${blue}##  88 d88           d8'  '8b     88        88  ##\n"
-    printf "${blue}##  8888'88.        d8YaaaaY8b    88        88  ##\n"
-    printf "${blue}##  88P   Y8b      d8''''''''8b   88        88  ##\n"
-    printf "${blue}##  88     '88.   d8'        '8b  88        88  ##\n"
-    printf "${blue}##  88       Y8b d8'          '8b 888888888 88  ##\n"
-    printf "${blue}##            Forked by @independentcod         ##\n"
-    printf "${blue}################### NetHunter ####################${reset}\n\n"
-}
-
 ##################################
 ##              Main            ##
 
@@ -421,19 +416,7 @@ yellow='\033[1;33m'
 blue='\033[1;34m'
 light_cyan='\033[1;96m'
 reset='\033[0m'
-
-EXTRA_ARGS=""
-if [[ ! -z $1 ]]; then
-    EXTRA_ARGS=$1
-    if [[ $EXTRA_ARGS != "--insecure" ]]; then
-        EXTRA_ARGS=""
-    fi
-fi
-
 cd $HOME
-print_banner
-get_arch
-set_strings
 prepare_fs
 check_dependencies
 get_rootfs
