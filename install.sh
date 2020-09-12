@@ -135,14 +135,14 @@ function check_dependencies() {
 		echo "Backing up sources.list"
 		cp /etc/apt/sources.list sources.list.bak -r
 		echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
-		apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6;
+		apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6
 		apt install net-tools -y;
 	elif [ "$PKGMAN" = "yum" ]; then 
 		cd /etc/yum.repos.d/
 		curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-		cd ~;
+		cd ~
 		yum update
-		yum install net-tools
+		yum install net-tools;
 	fi
     for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
@@ -245,8 +245,8 @@ if [ -d "\${CHROOT}/root/mollyweb" ]; then rm -rf \${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
 myip=\$(ifconfig | grep inet) 
 echo "\${myip} port 8088 http and https port 8443";
-echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
-echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
+echo "Listen 8088" > \${CHROOT}/etc/apache2/ports.conf;
+echo "Listen 8443 ssl" >> \${CHROOT}/etc/apache2/ports.conf;
 nh -r \$cmd5 &
 exit 0
 EOF
