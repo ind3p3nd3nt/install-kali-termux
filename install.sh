@@ -248,7 +248,7 @@ function remote() {
 #!/bin/bash
 cd \${HOME}
 unset LD_PRELOAD
-nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
+nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
 user="kalilinux"
 home="/home/\$user"
 if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
@@ -342,7 +342,7 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install kali-menu sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
+    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
     echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers;
     echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" >> $CHROOT/etc/sudoers;
