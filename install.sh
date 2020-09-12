@@ -127,7 +127,7 @@ function check_dependencies() {
     printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
     ${PKGMAN} update -y &> /dev/null
 
-    for i in proot tar axel; do
+    for i in proot tar axel net-tools; do
         if [ -e $PREFIX/bin/$i ]; then
             echo "  $i is OK"
         else
@@ -231,8 +231,7 @@ nh -r \$cmd2;
 nh -r \$cmd3;
 if [ -d "\${CHROOT}/root/mollyweb" ]; then rm -rf \${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
-${PKGMAN} install net-tools -y;
-myip=\$(sudo ifconfig | grep inet) 
+myip=\$(ifconfig | grep inet) 
 echo "\${myip} port 8088 http and https port 8443";
 echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
 echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
@@ -277,7 +276,7 @@ home="/home/\$user"
 if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 ${PKGMAN} install net-tools -y;
-myip=\$(sudo ifconfig | grep inet) 
+myip=\$(ifconfig | grep inet) 
 echo "\$myip";
 nh -r /bin/vncserver :3 -localhost no
 EOF
@@ -377,10 +376,15 @@ function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
     USRID=$(nh "\$(id -u)")
     GRPID=$(nh "\$(id -g)")
-    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/usr/bin/sudo $CHROOT/etc/hosts
-    chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd /bin/sexywall
+    useradd $USERNAME
+    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/usr/bin/sudo $CHROOT/etc/hosts 
+    chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd /bin/sexywall ${CHROOT}/home/${USERNAME} -R
+    chown ${USERNAME}:${USERNAME} ${CHROOT}/home/${USERNAME} -R
     nh -r usermod -g sudo $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
+    cp -r /usr/sbin/ifconfig /usr/bin/ifconfig
+    chmod 777 /usr/bin/ifconfig
+    userdel -f $USERNAME
 }
 
 function print_banner() {
