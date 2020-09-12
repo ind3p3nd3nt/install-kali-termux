@@ -278,7 +278,7 @@ if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 myip=\$(ifconfig | grep inet) 
 echo "\$myip";
-nh -r /bin/vncserver :3 -localhost no&
+nh -r /bin/vncserver :3 -localhost no
 exit 0
 EOF
     chmod +x $NH_REMOTE  
