@@ -5,7 +5,7 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
-PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "sudo apt"; else echo "sudo yum"; fi)
+PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; else echo "yum"; fi)
 
 if [ -f "/usr/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
@@ -39,7 +39,7 @@ function get_arch() {
 get_arch;
 	
 
-if [ "$PKGMAN" = "sudo apt" ]; then 
+if [ "$PKGMAN" = "apt" ]; then 
 	echo "Backing up sources.list"
 	cp /etc/apt/sources.list sources.list.bak -r
 	echo "Adding Termux & Kali Sources"
@@ -223,7 +223,7 @@ unset LD_PRELOAD
 user="root"
 home="/\$user"
 cmd1="apt update"
-cmd2="apt install apache2 wget net-tools sudo git -y"
+cmd2="apt install apache2 wget sudo git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
 cmd5="service apache2 start"
