@@ -352,10 +352,9 @@ function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
     USRID=$(id -u)
     GRPID=$(id -g)
-    if [ ! "$USRID" -eq 0 ]; then
-	    nh -r usermod -u $USRID $USERNAME 2>/dev/null
-	    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
-	fi
+    nh -r usermod -u $USRID $USERNAME 2>/dev/null
+    nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
+    nh -r chown -R root:root /etc/sudoers* 2>/dev/null
 }
 
 function print_banner() {
