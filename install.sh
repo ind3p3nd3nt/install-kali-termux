@@ -23,7 +23,7 @@ function print_banner() {
     printf "${blue}##  88     '88.   d8'        '8b  88        88  ##\n"
     printf "${blue}##  88       Y8b d8'          '8b 888888888 88  ##\n"
     printf "${blue}##            Forked by @independentcod         ##\n"
-    printf "${blue}################### NetHunter ####################${reset}\n\n"
+    printf "${blue}################### NetHunter ####################\n\n"
 }	
 function unsupported_arch() {
 	printf "${red}"
@@ -137,7 +137,7 @@ function check_dependencies() {
 	fi
     for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
-            echo "  $i is OK"
+            printf "${green}[*] ${i} is OK!\n"
         else
             printf "Installing ${i}...\n"
             ${PKGMAN} install -y $i || {
