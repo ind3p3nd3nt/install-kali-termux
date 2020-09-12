@@ -5,8 +5,8 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
-PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo apt; else echo yum; fi)
-HTTPD=$(if [ -f "/usr/bin/apt" ]; then echo apache2; else echo httpd; fi)
+PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "sudo apt"; else echo "sudo yum"; fi)
+
 if [ -f "/usr/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi	
@@ -219,7 +219,6 @@ function webd() {
 #!/bin/bash
 cd \${HOME}
 unset LD_PRELOAD
-httpd
 user="root"
 home="/\$user"
 cmd1="apt update"
@@ -233,7 +232,7 @@ nh -r \$cmd3;
 if [ -d "\${CHROOT}/root/mollyweb" ]; then rm -rf \${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
 ${PKGMAN} install net-tools -y;
-myip=\$(ifconfig | grep inet) 
+myip=\$(sudo ifconfig | grep inet) 
 echo "\${myip} port 8088 http and https port 8443";
 echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
 echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
@@ -241,6 +240,30 @@ nh -r \$cmd5 &
 EOF
     chmod +x $NH_WEBD  
 }
+
+##TODO
+#function sexywall() {
+#    NH_SEXY=${PREFIX}/bin/sexywall
+#    cat > $NH_SEXY <<- EOF
+##!/bin/bash
+#cd \${HOME}
+#unset LD_PRELOAD
+#user="root"
+#home="/\$user"
+#cmd1="apt update"
+#cmd2="apt install git pcmanfm -y"
+#cmd3="git clone https://github.com/independentcod/lxde-wallpaperchanger.git"
+#cmd4="sh lxde-wallpaperchanger/install.sh"
+####TO DO cmd5=""
+#nh -r \$cmd1;
+#nh -r \$cmd2;
+#nh -r \$cmd3;
+#nh -r \$cmd4;
+#nh -r \$cmd5 &
+#EOF
+#    chmod +x $NH_SEXY  
+#}
+
 
 function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
@@ -251,10 +274,10 @@ unset LD_PRELOAD
 nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
 user="kalilinux"
 home="/home/\$user"
-if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 ${PKGMAN} install net-tools -y;
-myip=\$(ifconfig wlan0 | grep inet) 
+myip=\$(sudo ifconfig | grep inet) 
 echo "\$myip";
 nh -r /bin/vncserver :3 -localhost no
 EOF
@@ -352,10 +375,10 @@ function fix_sudo() {
 
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
-    USRID=$(nh -r runuser -l $USERNAME -c "\$(id -u)")
-    GRPID=$(nh -r runuser -l $USERNAME -c "\$(id -g)")
-    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/usr/bin/sudo
-    chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd
+    USRID=$(nh "\$(id -u)")
+    GRPID=$(nh "\$(id -g)")
+    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/usr/bin/sudo $CHROOT/etc/hosts
+    chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd /bin/sexywall
     nh -r usermod -g sudo $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
 }
@@ -410,9 +433,11 @@ create_launcher
 update
 remote
 webd
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd $USERNAME; fi
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /bin/mkdir /home/${USERNAME}; fi
+#sexywall
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd -m $USERNAME; fi
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh /bin/mkdir /home/${USERNAME}; fi
 if [ ! -d ${CHROOT}/root/Desktop/ ]; then nh -r /bin/mkdir /root/Desktop/; fi
+if [ ! -d ${CHROOT}/root/Desktop/Wallpapers ]; then nh -r /bin/mkdir /root/Desktop/Wallpapers; fi
 if [ ! -d ${CHROOT}/root/.vnc ]; then nh -r /bin/mkdir /root/.vnc; fi
 echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
 echo 'lxterminal &' >> ${CHROOT}/root/.vnc/xstartup;
@@ -431,4 +456,5 @@ printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
 printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
 printf "${green}[+] remote                # To install a LXDE Display Manager on port 5903 reachable by other devices and set password${reset}\n\n"
 printf "${green}[+] remote &              # To start the VNC server${reset}\n\n"
-printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template ${reset}\n\n"
+printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
+#printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
