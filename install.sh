@@ -344,18 +344,18 @@ function fix_sudo() {
     ## fix sudo & su on start
     if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
-    useradd $USERNAME
-    usermod -u 1001 $USERNAME
-    runuser -l $USERNAME -c "echo root    ALL=(ALL:ALL) ALL > \$CHROOT/etc/sudoers"
-    runuser -l $USERNAME -c "echo %sudo    ALL=(ALL:ALL) NOPASSWD:ALL >> \$CHROOT/etc/sudoers"
+    echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers
+    echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" >> $CHROOT/etc/sudoers
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
-    #echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
+    echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
 
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
-    USRID=$(runuser -l $USERNAME -c "\$(id -u)")
-    GRPID=$(runuser -l $USERNAME -c "\$(id -g)")
+    USRID=$(nh -r runuser -l $USERNAME -c "\$(id -u)")
+    GRPID=$(nh -r runuser -l $USERNAME -c "\$(id -g)")
+    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/usr/bin/sudo
+    chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd
     nh -r usermod -g sudo $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
 }
