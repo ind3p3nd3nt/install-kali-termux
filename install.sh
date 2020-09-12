@@ -284,7 +284,7 @@ if [ "\$1" = "start" ]; then
 	nh -r /bin/vncserver :3 -localhost no&
 fi
 if [ "\$1" = "passwd" ]; then
-	nh -r vncpassswd;
+	nh -r vncpasswd;
 fi
 exit 0
 EOF
