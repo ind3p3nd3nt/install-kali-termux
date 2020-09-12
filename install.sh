@@ -5,25 +5,32 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
-PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; else echo "yum"; fi)
+PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
+red='\033[1;31m'
+green='\033[1;32m'
+yellow='\033[1;33m'
+blue='\033[1;34m'
+light_cyan='\033[1;96m'
+reset='\033[0m'
 if [ -f "/usr/bin/getprop" ]; then getprop="1"; fi
 if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
 if [ -z "$archcase" ]; then archcase=$(uname -m); fi
 cd ~;
 function print_banner() {
     clear
-    printf "${blue}##################################################\n"
-    printf "${blue}##                                              ##\n"
-    printf "${blue}##  88      a8P         db        88        88  ##\n"
-    printf "${blue}##  88    .88'         d88b       88        88  ##\n"
-    printf "${blue}##  88   88'          d8''8b      88        88  ##\n"
-    printf "${blue}##  88 d88           d8'  '8b     88        88  ##\n"
-    printf "${blue}##  8888'88.        d8YaaaaY8b    88        88  ##\n"
-    printf "${blue}##  88P   Y8b      d8''''''''8b   88        88  ##\n"
-    printf "${blue}##  88     '88.   d8'        '8b  88        88  ##\n"
-    printf "${blue}##  88       Y8b d8'          '8b 888888888 88  ##\n"
-    printf "${blue}##            Forked by @independentcod         ##\n"
-    printf "${blue}################### NetHunter ####################\n\n"
+    printf "${red}"
+    printf "${red}##################################################\n"
+    printf "${red}##                                              ##\n"
+    printf "${red}##  88      a8P         db        88        88  ##\n"
+    printf "${red}##  88    .88'         d88b       88        88  ##\n"
+    printf "${red}##  88   88'          d8''8b      88        88  ##\n"
+    printf "${red}##  88 d88           d8'  '8b     88        88  ##\n"
+    printf "${red}##  8888'88.        d8YaaaaY8b    88        88  ##\n"
+    printf "${red}##  88P   Y8b      d8''''''''8b   88        88  ##\n"
+    printf "${red}##  88     '88.   d8'        '8b  88        88  ##\n"
+    printf "${red}##  88       Y8b d8'          '8b 888888888 88  ##\n"
+    printf "${red}##            ${blue}Forked by @independentcod${red}         ##\n"
+    printf "${red}################### NetHunter ####################${reset}\n\n"
 }	
 function unsupported_arch() {
 	printf "${red}"
@@ -335,7 +342,6 @@ fi
 
 cmdline="proot \\
 		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
-		-v 1 \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
@@ -396,17 +402,6 @@ function fix_uid() {
     chmod 777 /usr/bin/ifconfig
     nh -r chmod +sxr-w /usr/bin/sudo;
 }
-
-##################################
-##              Main            ##
-
-# Add some colours
-red='\033[1;31m'
-green='\033[1;32m'
-yellow='\033[1;33m'
-blue='\033[1;34m'
-light_cyan='\033[1;96m'
-reset='\033[0m'
 cd $HOME
 prepare_fs
 check_dependencies
