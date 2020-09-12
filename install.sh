@@ -356,7 +356,7 @@ function fix_uid() {
     GRPID=$(id -g)
     nh -r usermod -u $USRID $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
-    nh -r chown ${USERNAME}:${USERNAME} /etc/sudo.conf 2>/dev/null
+    nh -r chown root:root /etc/sudoers /etc/sudoers.d /etc/sudo.conf -R 2>/dev/null
 }
 
 function print_banner() {
