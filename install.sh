@@ -153,7 +153,7 @@ function check_dependencies() {
             }
         fi
     done
-    if [ "$PKGMAN" = apt]; then cp -r sources.list.bak /etc/apt/sources.list; fi
+    if [ "$PKGMAN" = "apt" ]; then cp -r sources.list.bak /etc/apt/sources.list; fi
 }
 
 function get_rootfs() {
