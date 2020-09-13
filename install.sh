@@ -268,7 +268,7 @@ cmd4="sh lxde-wallpaperchanger/install.sh&"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
-nr -r DISPLAY=:3;
+nh -r DISPLAY=:3;
 DISPLAY=:3;
 nh -r \$cmd4&
 exit 0
