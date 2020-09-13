@@ -130,19 +130,8 @@ function cleanup() {
 
 function check_dependencies() {
 	printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
-	if [ "$PKGMAN" = "apt" ]; then 
-		echo "Backing up sources.list"
-		cp /etc/apt/sources.list sources.list.bak -r
-		echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
-		apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6
-		apt install net-tools -y;
-	elif [ "$PKGMAN" = "yum" ]; then 
-		cd /etc/yum.repos.d/
-		curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
-		cd ~
-		yum install net-tools;
-	fi
 	${PKGMAN} update -y &> /dev/null
+	apt install net-tools -y;
     for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
             printf "${green}[*] ${i} is OK!\n"
@@ -154,7 +143,6 @@ function check_dependencies() {
             }
         fi
     done
-    if [ "$PKGMAN" = "apt" ]; then cp -r sources.list.bak /etc/apt/sources.list; fi
 }
 
 function get_rootfs() {
