@@ -1,7 +1,7 @@
 #!/bin/bash
 # This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
-# This script is to install NetHunter on other Linux devices than an Android (on CentOS for example) 
-# It's currently in BETA stage and under developpment use at your own risk it might contain bugs
+# This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
+# I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
@@ -154,7 +154,7 @@ function check_dependencies() {
             }
         fi
     done
-    cp -r sources.list.bak /etc/apt/sources.list;
+    if [ "$PKGMAN" = "apt" ]; then cp -r sources.list.bak /etc/apt/sources.list; fi
 }
 
 function get_rootfs() {
