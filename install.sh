@@ -4,7 +4,7 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
-PKGMAN="pkg"
+PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
 green='\033[1;32m'
 yellow='\033[1;33m'
@@ -153,7 +153,7 @@ function check_dependencies() {
             }
         fi
     done
-    if [ "$PKGMAN" = "apt" ]; then cp -r sources.list.bak /etc/apt/sources.list; fi
+    cp -r sources.list.bak /etc/apt/sources.list;
 }
 
 function get_rootfs() {
@@ -312,12 +312,6 @@ function create_launcher() {
 cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
-## Workaround for Libreoffice, also needs to bind a fake /proc/version
-if [ ! -f \$CHROOT/root/.version ]; then
-    if [ ! -d \$CHROOT/root/ ]; then mkdir \$CHROOT/root/; fi
-    touch \$CHROOT/root/.version
-fi
-
 ## Default user is "kalilinux"
 user="kalilinux"
 home="/home/kalilinux"
@@ -415,11 +409,11 @@ update
 remote
 webd
 sexywall
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd -m $USERNAME; fi
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh /bin/mkdir /home/${USERNAME}; fi
-if [ ! -d ${CHROOT}/root/Desktop/ ]; then nh -r /bin/mkdir /root/Desktop/; fi
-if [ ! -d ${CHROOT}/root/Desktop/Wallpapers ]; then nh -r /bin/mkdir /root/Desktop/Wallpapers; fi
-if [ ! -d ${CHROOT}/root/.vnc ]; then nh -r /bin/mkdir /root/.vnc; fi
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r useradd -m $USERNAME; fi
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then mkdir ${CHROOT}/home/${USERNAME}; fi
+if [ ! -d ${CHROOT}/root/Desktop/ ]; then mkdir ${CHROOT}/root/Desktop/; fi
+if [ ! -d ${CHROOT}/root/Desktop/Wallpapers ]; then mkdir ${CHROOT} /root/Desktop/Wallpapers; fi
+if [ ! -d ${CHROOT}/root/.vnc ]; then mkdir ${CHROOT}/root/.vnc; fi
 echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
 echo 'lxterminal &' >> ${CHROOT}/root/.vnc/xstartup;
 echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
