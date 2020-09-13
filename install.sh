@@ -1,20 +1,75 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
 # This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
-# I just added some stuff I thought it was cool. No hate, we are family.
-
+# This script is to install NetHunter on other Linux devices than an Android (on CentOS for example) 
+# It's currently in BETA stage and under developpment use at your own risk it might contain bugs
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
-USERNAME=pwnphone
-
-
-
-function unsupported_arch() {
+USERNAME=kalilinux
+PKGMAN="pkg"
+red='\033[1;31m'
+green='\033[1;32m'
+yellow='\033[1;33m'
+blue='\033[1;34m'
+light_cyan='\033[1;96m'
+reset='\033[0m'
+if [ -f "/usr/bin/getprop" ]; then getprop="1"; fi
+if [ ! -z "$getprop" ]; then archcase=$(getprop ro.product.cpu.abi); fi
+if [ -z "$archcase" ]; then archcase=$(uname -m); fi
+cd ~;
+function print_banner() {
+    clear
     printf "${red}"
-    echo "[*] Unsupported Architecture\n\n"
-    printf "${reset}"
-    exit
+    printf "${red}##################################################\n"
+    printf "${red}##                                              ##\n"
+    printf "${red}##  88      a8P         db        88        88  ##\n"
+    printf "${red}##  88    .88'         d88b       88        88  ##\n"
+    printf "${red}##  88   88'          d8''8b      88        88  ##\n"
+    printf "${red}##  88 d88           d8'  '8b     88        88  ##\n"
+    printf "${red}##  8888'88.        d8YaaaaY8b    88        88  ##\n"
+    printf "${red}##  88P   Y8b      d8''''''''8b   88        88  ##\n"
+    printf "${red}##  88     '88.   d8'        '8b  88        88  ##\n"
+    printf "${red}##  88       Y8b d8'          '8b 888888888 88  ##\n"
+    printf "${red}##            ${blue}Forked by @independentcod${red}         ##\n"
+    printf "${red}################### NetHunter ####################${reset}\n\n"
+}	
+function unsupported_arch() {
+	printf "${red}"
+	echo "[*] Unsupported Architecture\n\n"
+	printf "${reset}"
+	exit
 }
-
+function get_arch() {
+    printf "${blue}[*] Checking device architecture ..."
+    case $archcase in
+        arm64-v8a)
+            SYS_ARCH=arm64
+            ;;
+        armeabi|armeabi-v7a)
+            SYS_ARCH=armhf
+            ;;
+        x86_64|amd64)
+            SYS_ARCH=amd64
+            ;;
+        i386|i686|x86)
+            SYS_ARCH=i386
+            ;;
+        *)
+            unsupported_arch
+            ;;
+    esac
+}
+function set_strings() {
+    CHROOT=kali-${SYS_ARCH}
+    IMAGE_NAME=kalifs-${SYS_ARCH}-minimal.tar.xz
+    SHA_NAME=kalifs-${SYS_ARCH}-minimal.sha512sum
+}  
+function get_url() {
+    ROOTFS_URL="${BASE_URL}/${IMAGE_NAME}"
+    SHA_URL="${BASE_URL}/${SHA_NAME}"
+}
+print_banner
+get_arch
+set_strings
 function ask() {
     # http://djm.me/ask
     while true; do
@@ -47,36 +102,7 @@ function ask() {
             N*|n*) return 1 ;;
         esac
     done
-}
-
-function get_arch() {
-    printf "${blue}[*] Checking device architecture ..."
-    archcase=$(getprop ro.product.cpu.abi)
-    if [ -z "$archcase" ]; then archcase=$(uname -m); fi
-    case $archcase in
-        arm64-v8a)
-            SYS_ARCH=arm64
-            ;;
-        armeabi|armeabi-v7a)
-            SYS_ARCH=armhf
-            ;;
-        x86_64|amd64)
-            SYS_ARCH=amd64
-            ;;
-        i386|i686|x86)
-            SYS_ARCH=i386
-            ;;
-        *)
-            unsupported_arch
-            ;;
-    esac
-}
-
-function set_strings() {
-    CHROOT=kali-${SYS_ARCH}
-    IMAGE_NAME=kalifs-${SYS_ARCH}-minimal.tar.xz
-    SHA_NAME=kalifs-${SYS_ARCH}-minimal.sha512sum
-}    
+}  
 
 function prepare_fs() {
     unset KEEP_CHROOT
@@ -103,27 +129,32 @@ function cleanup() {
 } 
 
 function check_dependencies() {
-    printf "${blue}\n[*] Checking package dependencies...${reset}\n"
-    apt update -y &> /dev/null
-
-    for i in proot tar axel; do
+	printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
+	if [ "$PKGMAN" = "apt" ]; then 
+		echo "Backing up sources.list"
+		cp /etc/apt/sources.list sources.list.bak -r
+		echo deb http://http.kali.org/kali kali-rolling main contrib non-free >/etc/apt/sources.list
+		apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys ED444FF07D8D0BF6
+		apt install net-tools -y;
+	elif [ "$PKGMAN" = "yum" ]; then 
+		cd /etc/yum.repos.d/
+		curl -O https://copr.fedorainfracloud.org/coprs/jlaska/proot/repo/epel-7/jlaska-proot-epel-7.repo
+		cd ~
+		yum install net-tools;
+	fi
+	${PKGMAN} update -y &> /dev/null
+    for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
-            echo "  $i is OK"
+            printf "${green}[*] ${i} is OK!\n"
         else
             printf "Installing ${i}...\n"
-            apt install -y $i || {
+            ${PKGMAN} install -y $i || {
                 printf "${red}ERROR: Failed to install packages.\n Exiting.\n${reset}"
             exit
             }
         fi
     done
-    apt upgrade -y
-}
-
-
-function get_url() {
-    ROOTFS_URL="${BASE_URL}/${IMAGE_NAME}"
-    SHA_URL="${BASE_URL}/${SHA_NAME}"
+    cp -r sources.list.bak /etc/apt/sources.list;
 }
 
 function get_rootfs() {
@@ -139,7 +170,7 @@ function get_rootfs() {
     fi
     printf "${blue}[*] Downloading rootfs...${reset}\n\n"
     get_url
-    axel ${EXTRA_ARGS} --alternate "$ROOTFS_URL"
+    curl -O ${ROOTFS_URL}
 }
 
 function get_sha() {
@@ -149,7 +180,7 @@ function get_sha() {
         if [ -f ${SHA_NAME} ]; then
             rm -f ${SHA_NAME}
         fi
-        axel ${EXTRA_ARGS} --alternate "${SHA_URL}"
+        curl -O "${SHA_URL}"
     fi
 }
 
@@ -167,7 +198,7 @@ function extract_rootfs() {
     if [ -z $KEEP_CHROOT ]; then
         printf "\n${blue}[*] Extracting rootfs... ${reset}\n\n"
         if [ ! -d "$CHROOT" ]; then mkdir $CHROOT; fi
-        proot --link2symlink tar vxfJ $IMAGE_NAME 2> /dev/null || :
+        $(if [ ! -z "$getprop" ]; then echo "proot --link2symlink"; fi) tar vxfJ $IMAGE_NAME $(if [ -z "$getprop" ]; then echo "--keep-directory-symlink"; fi) 2> /dev/null || :
     else        
         printf "${yellow}[!] Using existing rootfs directory${reset}\n"
     fi
@@ -180,14 +211,15 @@ function update() {
 unset LD_PRELOAD
 user="root"
 home="/root"
-cmd1="/bin/apt update"
-cmd2="/bin/apt-get install busybox sudo kali-menu kali-tools. -y"
-cmd3="/bin/apt full-upgrade -y"
-cmd4="/bin/apt auto-remove -y"
+cmd1="apt update"
+cmd2="apt-get install busybox sudo kali-menu kali-tools. -y"
+cmd3="apt full-upgrade -y"
+cmd4="apt auto-remove -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
 nh -r \$cmd4;
+exit 0
 EOF
     chmod +x $NH_UPDATE  
 }
@@ -200,25 +232,50 @@ cd \${HOME}
 unset LD_PRELOAD
 user="root"
 home="/\$user"
-cmd1="/bin/apt update"
-cmd2="/bin/apt-get install apache2 wget net-tools sudo git -y"
+cmd1="apt update"
+cmd2="apt install apache2 wget sudo git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
-cmd5="service apache2 start"
+cmd5="apache2&"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
 if [ -d "\${CHROOT}/root/mollyweb" ]; then rm -rf \${CHROOT}/root/mollyweb; fi
 nh -r \$cmd4;
-echo "Listen 8088" > $CHROOT/etc/apache2/ports.conf;
-echo "Listen 8443 ssl" >> $CHROOT/etc/apache2/ports.conf;
+myip=\$(ifconfig | grep inet) 
+echo "\${myip} port 8088 http and https port 8443";
+echo "Listen 8088" > \${CHROOT}/etc/apache2/ports.conf;
+echo "Listen 8443 ssl" >> \${CHROOT}/etc/apache2/ports.conf;
 nh -r \$cmd5 &
-pkg install net-tools -y;
-myip=\$(ifconfig wlan0 | grep inet) 
-echo "Your apache2 IP address: \${myip} port 8088 http and https port 8443";
+exit 0
 EOF
     chmod +x $NH_WEBD  
 }
+
+
+function sexywall() {
+    NH_SEXY=${PREFIX}/bin/sexywall
+    cat > $NH_SEXY <<- EOF
+#!/data/data/com.termux/files/usr/bin/bash -e
+cd \${HOME}
+unset LD_PRELOAD
+user="root"
+home="/\$user"
+cmd1="apt update"
+cmd2="apt install git pcmanfm -y"
+cmd3="git clone https://github.com/independentcod/lxde-wallpaperchanger.git"
+cmd4="sh lxde-wallpaperchanger/install.sh&"
+nh -r \$cmd1;
+nh -r \$cmd2;
+nh -r \$cmd3;
+nh -r DISPLAY=:3;
+DISPLAY=:3;
+nh -r \$cmd4&
+exit 0
+EOF
+    chmod +x $NH_SEXY  
+}
+
 
 function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
@@ -226,15 +283,22 @@ function remote() {
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 unset LD_PRELOAD
-nh -r /bin/apt update && nh -r /bin/apt install tigervnc-standalone-server lxde-core net-tools lxterminal -y;
-user="pwnphone"
-home="/home/\$user"
-if [ -f \$CHROOT/tmp/.X3-lock ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
-nh /bin/vncserver :3 -localhost no
-echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
-pkg install net-tools -y;
-myip=\$(ifconfig wlan0 | grep inet) 
-echo "Your Phone IP address: \$myip";
+if [ "\$1" = "install" ]; then
+	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
+fi
+if [ "\$1" = "stop" ]; then
+	if [ -f "\$CHROOT/tmp/.X3-lock" ]; then rm -rf \$CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+fi
+if [ "\$1" = "start" ]; then
+	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
+	myip=\$(ifconfig | grep inet) 
+	echo "\$myip";
+	nh -r /bin/vncserver :3 -localhost no&
+fi
+if [ "\$1" = "passwd" ]; then
+	nh -r vncpasswd;
+fi
+exit 0
 EOF
     chmod +x $NH_REMOTE  
 }
@@ -250,19 +314,19 @@ cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
 ## Workaround for Libreoffice, also needs to bind a fake /proc/version
-if [ ! -f $CHROOT/root/.version ]; then
-    if [ ! -d $CHROOT/root/ ]; then mkdir $CHROOT/root/; fi
-    touch $CHROOT/root/.version
+if [ ! -f \$CHROOT/root/.version ]; then
+    if [ ! -d \$CHROOT/root/ ]; then mkdir \$CHROOT/root/; fi
+    touch \$CHROOT/root/.version
 fi
 
-## Default user is "pwnphone"
-user="pwnphone"
-home="/home/pwnphone"
-start="sudo -u $USERNAME /bin/bash"
+## Default user is "kalilinux"
+user="kalilinux"
+home="/home/kalilinux"
+start="sudo -u $USERNAME /bin/bash --login"
 
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
-if grep -q "$USERNAME" ${CHROOT}/etc/passwd; then
+if grep -q "\$USERNAME" \${CHROOT}/etc/passwd; then
     KALIUSR="1";
 else
     KALIUSR="0";
@@ -278,15 +342,15 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
 fi
 
 cmdline="proot \\
-        --link2symlink \\
+		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
         -0 \\
         -r $CHROOT \\
         -b /dev \\
         -b /proc \\
-        -b $CHROOT\$home:/dev/shm \\
+        -b \${CHROOT}\${home}:/dev/shm \\
         -w \$home \\
            /usr/bin/env -i \\
-           HOME=\$home \\
+           HOME=\${home} \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
@@ -300,7 +364,7 @@ else
 fi
 EOF
 
-    chmod 700 $NH_LAUNCHER
+    chmod +rxs-w $NH_LAUNCHER
     if [ -L ${NH_SHORTCUT} ]; then
         rm -f ${NH_SHORTCUT}
     fi
@@ -320,78 +384,45 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +s $CHROOT/usr/bin/sudo; else nh -r /bin/apt update && nh -r /bin/apt install sudo busybox -y && chmod +s $CHROOT/usr/bin/sudo; fi
-    if [ -f "$CHROOT/usr/bin/su" ]; then chmod +s $CHROOT/usr/bin/su; fi
-    if [ ! -d "$CHROOT/etc/sudoers.d/" ]; then mkdir $CHROOT/etc/sudoers.d/; fi
-    if [ ! -f "$CHROOT/etc/sudoers.d/$USERNAME" ]; then echo "$USERNAME    ALL=(ALL:ALL) NOPASSWD:ALL" > $CHROOT/etc/sudoers.d/$USERNAME; fi
+    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +rxs-w $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +rxs-w $CHROOT/usr/bin/sudo; fi
+    if [ -f "$CHROOT/usr/bin/su" ]; then chmod +rxs-w $CHROOT/usr/bin/su; fi
+    echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers
+    echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" >> $CHROOT/etc/sudoers
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
 
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
-    USRID=$(id -u)
     GRPID=$(id -g)
-    nh -r usermod -u $USRID $USERNAME 2>/dev/null
+    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/etc/hosts $CHROOT/usr/bin/sudo
+    chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd /bin/sexywall ${CHROOT}/home/${USERNAME} -R
+    nh -r usermod -g sudo $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
+    if [ -f "/usr/sbin/ifconfig" ]; then mv -f /usr/sbin/ifconfig /usr/bin/ifconfig; fi
+    chmod 777 /usr/bin/ifconfig
+    nh -r chmod +sxr-w /usr/bin/sudo;
 }
-
-function print_banner() {
-    clear
-    printf "${blue}##################################################\n"
-    printf "${blue}##                                              ##\n"
-    printf "${blue}##  88      a8P         db        88        88  ##\n"
-    printf "${blue}##  88    .88'         d88b       88        88  ##\n"
-    printf "${blue}##  88   88'          d8''8b      88        88  ##\n"
-    printf "${blue}##  88 d88           d8'  '8b     88        88  ##\n"
-    printf "${blue}##  8888'88.        d8YaaaaY8b    88        88  ##\n"
-    printf "${blue}##  88P   Y8b      d8''''''''8b   88        88  ##\n"
-    printf "${blue}##  88     '88.   d8'        '8b  88        88  ##\n"
-    printf "${blue}##  88       Y8b d8'          '8b 888888888 88  ##\n"
-    printf "${blue}##            Forked by @independentcod         ##\n"
-    printf "${blue}################### NetHunter ####################${reset}\n\n"
-}
-
-##################################
-##              Main            ##
-
-# Add some colours
-red='\033[1;31m'
-green='\033[1;32m'
-yellow='\033[1;33m'
-blue='\033[1;34m'
-light_cyan='\033[1;96m'
-reset='\033[0m'
-
-EXTRA_ARGS=""
-if [[ ! -z $1 ]]; then
-    EXTRA_ARGS=$1
-    if [[ $EXTRA_ARGS != "--insecure" ]]; then
-        EXTRA_ARGS=""
-    fi
-fi
-
 cd $HOME
-print_banner
-get_arch
-set_strings
 prepare_fs
 check_dependencies
 get_rootfs
 get_sha
 verify_sha
 extract_rootfs
-printf "\n${blue}[*] Configuring NetHunter for Termux ...\n"
+printf "\n${blue}[*] Configuring NetHunter for $(uname -a) ...\n"
 create_launcher
 update
 remote
 webd
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd $USERNAME; fi
-if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /bin/mkdir /home/${USERNAME}; fi
-if [ ! -d ${CHROOT}/home/${USERNAME}/Desktop/ ]; then nh -r /bin/mkdir /home/${USERNAME}/Desktop/; fi
-if [ ! -d ${CHROOT}/home/${USERNAME}/.vnc ]; then nh -r /bin/mkdir /home/${USERNAME}/.vnc; fi
-echo 'lxsession &' > ${CHROOT}/home/${USERNAME}/.vnc/xstartup;
-echo 'lxterminal &' >> ${CHROOT}/home/${USERNAME}/.vnc/xstartup;
+sexywall
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh -r /sbin/useradd -m $USERNAME; fi
+if [ ! -d ${CHROOT}/home/${USERNAME} ]; then nh /bin/mkdir /home/${USERNAME}; fi
+if [ ! -d ${CHROOT}/root/Desktop/ ]; then nh -r /bin/mkdir /root/Desktop/; fi
+if [ ! -d ${CHROOT}/root/Desktop/Wallpapers ]; then nh -r /bin/mkdir /root/Desktop/Wallpapers; fi
+if [ ! -d ${CHROOT}/root/.vnc ]; then nh -r /bin/mkdir /root/.vnc; fi
+echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
+echo 'lxterminal &' >> ${CHROOT}/root/.vnc/xstartup;
 echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
 echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
 cleanup
@@ -404,6 +435,10 @@ printf "${green}[+] To start NetHunter, type:${reset}\n"
 printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
-printf "${green}[+] upd                   # To update everything and install all kali-tools${reset}\n\n"
-printf "${green}[+] remote &              # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
-printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template ${reset}\n\n"
+printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
+printf "${green}[+] remote install        # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
+printf "${green}[+] remote start          # To start the VNC server${reset}\n\n"
+printf "${green}[+] remote passwd         # To change the remote VNC password${reset}\n\n"
+printf "${green}[+] remote stop           # To stop the VNC server${reset}\n\n"
+printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
+printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
