@@ -335,7 +335,7 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
 fi
 
 cmdline="proot \\
-		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
+	--link2symlink \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
