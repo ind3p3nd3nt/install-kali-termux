@@ -43,7 +43,7 @@ function get_arch() {
         arm64-v8a)
             SYS_ARCH=arm64
             ;;
-        armeabi|armeabi-v7a)
+        armv7l)
             SYS_ARCH=armhf
             ;;
         x86_64|amd64)
