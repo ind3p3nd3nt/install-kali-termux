@@ -4,10 +4,10 @@
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
-PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
+PKGMAN=pkg
 red='\033[1;31m'
 green='\033[1;32m'
-yellow='\033[1;33m'
+yellow='\033[1;33
 blue='\033[1;34m'
 light_cyan='\033[1;96m'
 reset='\033[0m'
@@ -18,9 +18,9 @@ cd ~;
 function print_banner() {
     clear
     printf "${red}"
-    printf "${red}##################################################\n"
+    printf "${red}################################################\n"
     printf "${red}##                                              ##\n"
-    printf "${red}##  88      a8P         db        88        88  ##\n"
+    printf "${red}##  88      a8P         db      8        88  ##\n"
     printf "${red}##  88    .88'         d88b       88        88  ##\n"
     printf "${red}##  88   88'          d8''8b      88        88  ##\n"
     printf "${red}##  88 d88           d8'  '8b     88        88  ##\n"
