@@ -18,9 +18,9 @@ cd ~;
 function print_banner() {
     clear
     printf "${red}"
-    printf "${red}################################################\n"
+    printf "${red}##################################################\n"
     printf "${red}##                                              ##\n"
-    printf "${red}##  88      a8P         db      8        88  ##\n"
+    printf "${red}##  88      a8P         db        88        88  ##\n"
     printf "${red}##  88    .88'         d88b       88        88  ##\n"
     printf "${red}##  88   88'          d8''8b      88        88  ##\n"
     printf "${red}##  88 d88           d8'  '8b     88        88  ##\n"
