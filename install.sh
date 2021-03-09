@@ -135,7 +135,7 @@ function check_dependencies() {
             printf "${green}[*] ${i} is OK!\n"
         else
             printf "Installing ${i}...\n"
-            ${PKGMAN} install -y $i || {
+            ${PKGMAN} install $i || {
                 printf "${red}ERROR: Failed to install packages.\n Exiting.\n${reset}"
             exit
             }
