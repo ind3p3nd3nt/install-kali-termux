@@ -198,17 +198,10 @@ function update() {
 unset LD_PRELOAD
 user="root"
 home="/root"
-cmd0="wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb"
 cmd1="apt update"
-cmd2="apt-get install busybox sudo kali-menu kali-tools. -y"
-cmd3="apt dist-upgrade -y"
-cmd4="apt auto-remove -y"
-$cmd0;
-nh -r \$cmd0;
+cmd2="apt-get install kali-menu kali-tools. -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
-nh -r \$cmd3;
-nh -r \$cmd4;
 exit 0
 EOF
     chmod +x $NH_UPDATE  
@@ -393,6 +386,8 @@ verify_sha
 extract_rootfs
 printf "\n${blue}[*] Configuring NetHunter for $(uname -a) ...\n"
 create_launcher
+wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
+cp /etc/apt/trusted.gpg kali-amd64/etc/apt/trusted.gpg
 update
 remote
 webd
