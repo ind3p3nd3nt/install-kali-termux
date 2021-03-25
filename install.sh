@@ -199,7 +199,7 @@ function update() {
 unset LD_PRELOAD
 user="root"
 home="/root"
-cmd0="wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2018.1_all.deb && apt install ./kali-archive-keyring_2018.1_all.deb"
+cmd0="wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && apt install ./kali-archive-keyring_2020.2_all.deb"
 cmd1="apt update"
 cmd2="apt-get install busybox sudo kali-menu kali-tools. -y"
 cmd3="apt full-upgrade -y"
