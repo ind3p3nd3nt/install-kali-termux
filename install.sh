@@ -203,6 +203,7 @@ cmd1="apt update"
 cmd2="apt-get install busybox sudo kali-menu kali-tools. -y"
 cmd3="apt dist-upgrade -y"
 cmd4="apt auto-remove -y"
+nh -r \$cmd0;
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
