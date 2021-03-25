@@ -217,7 +217,7 @@ unset LD_PRELOAD
 user="root"
 home="/\$user"
 cmd1="apt update"
-cmd2="apt install apache2 wget sudo git -y"
+cmd2="apt install apache2 wget git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
 cmd5="apache2&"
@@ -392,6 +392,7 @@ extract_rootfs
 printf "\n${blue}[*] Configuring NetHunter for $(uname -a) ...\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp /etc/apt/trusted.gpg kali-amd64/etc/apt/trusted.gpg
+cp /usr/bin/sudo kali-amd64/usr/bin/sudo
 create_launcher
 update
 remote
