@@ -199,7 +199,7 @@ function update() {
 unset LD_PRELOAD
 user="root"
 home="/root"
-cmd1="apt update"
+cmd1="apt-key adv --keyserver hkp://keys.gnupg.net --recv-keys 7D8D0BF6 && apt update"
 cmd2="apt-get install busybox sudo kali-menu kali-tools. -y"
 cmd3="apt full-upgrade -y"
 cmd4="apt auto-remove -y"
