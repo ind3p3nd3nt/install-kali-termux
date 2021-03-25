@@ -394,6 +394,7 @@ get_sha
 verify_sha
 extract_rootfs
 printf "\n${blue}[*] Configuring NetHunter for $(uname -a) ...\n"
+apt-key adv --keyserver hkp://keys.gnupg.net --recv-keys 7D8D0BF6
 create_launcher
 update
 remote
