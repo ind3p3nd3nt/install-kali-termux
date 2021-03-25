@@ -30,18 +30,7 @@ function print_banner() {
     printf "${red}##  88       Y8b d8'          '8b 888888888 88  ##\n"
     printf "${red}##            ${blue}Forked by @independentcod${red}         ##\n"
     printf "${red}################### NetHunter ####################${reset}\n\n"
-    printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
-printf "${green}[+] To start NetHunter, type:${reset}\n"
-printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
-printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
-printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
-printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
-printf "${green}[+] remote install        # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
-printf "${green}[+] remote start          # To start the VNC server${reset}\n\n"
-printf "${green}[+] remote passwd         # To change the remote VNC password${reset}\n\n"
-printf "${green}[+] remote stop           # To stop the VNC server${reset}\n\n"
-printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
-printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
+
 }	
 function unsupported_arch() {
 	printf "${red}"
@@ -398,12 +387,21 @@ verify_sha
 extract_rootfs
 printf "\n${blue}[*] Configuring NetHunter for $(uname -a) ...\n"
 create_launcher
+    printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
+printf "${green}[+] To start NetHunter, type:${reset}\n"
+printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
+printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
+printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
+printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
+printf "${green}[+] remote install        # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
+printf "${green}[+] remote start          # To start the VNC server${reset}\n\n"
+printf "${green}[+] remote passwd         # To change the remote VNC password${reset}\n\n"
+printf "${green}[+] remote stop           # To stop the VNC server${reset}\n\n"
+printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
+printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp /etc/apt/trusted.gpg kali-amd64/etc/apt/trusted.gpg
 update
-remote
-webd
-sexywall
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then nh -r useradd -m $USERNAME; fi
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then mkdir ${CHROOT}/home/${USERNAME}; fi
 if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
