@@ -43,7 +43,7 @@ function unsupported_arch() {
 function get_arch() {
     printf "${blue}[*] Checking device architecture ..."
     case $archcase in
-        arm64-v8a)
+        arm64-v8a|arm64-v8|aarch64)
             SYS_ARCH=arm64
             ;;
         armeabi|armeabi-v7a)
