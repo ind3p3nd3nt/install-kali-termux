@@ -409,6 +409,9 @@ cp /etc/apt/trusted.gpg kali-amd64/etc/apt/trusted.gpg
 cp /usr/bin/sudo kali-amd64/usr/bin/sudo
 create_launcher
 update
+sexywall
+remote
+webd
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then nh -r useradd -m $USERNAME; fi
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then mkdir ${CHROOT}/home/${USERNAME}; fi
 if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
