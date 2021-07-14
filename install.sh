@@ -402,6 +402,9 @@ printf "${green}[+] webd &                # To install an SSL Website www.mollye
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp /etc/apt/trusted.gpg kali-amd64/etc/apt/trusted.gpg
 update
+sexywall
+remote
+webd
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then nh -r useradd -m $USERNAME; fi
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then mkdir ${CHROOT}/home/${USERNAME}; fi
 if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
