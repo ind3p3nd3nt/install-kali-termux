@@ -1,10 +1,11 @@
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash -e
 # This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
-# This script is to install NetHunter Termux on any android device
+# This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
+# I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
-PKGMAN=pkg
+PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
 green='\033[1;32m'
 yellow='\033[1;33m'
@@ -31,6 +32,7 @@ function print_banner() {
     printf "${red}##            ${blue}Forked by @independentcod${red}         ##\n"
     printf "${red}################### NetHunter ####################${reset}\n\n"
 
+
 }	
 function unsupported_arch() {
 	printf "${red}"
@@ -44,7 +46,7 @@ function get_arch() {
         arm64-v8a|arm64-v8|aarch64)
             SYS_ARCH=arm64
             ;;
-        armv7l)
+        armeabi|armeabi-v7a)
             SYS_ARCH=armhf
             ;;
         x86_64|amd64)
@@ -131,18 +133,18 @@ function cleanup() {
 function check_dependencies() {
 	printf "${blue}\n[*] Checking package dependencies ***REQUIRES ROOT***${reset}\n"
 	${PKGMAN} update -y &> /dev/null
+	apt install net-tools -y;
     for i in proot tar curl; do
         if [ -e $PREFIX/bin/$i ]; then
             printf "${green}[*] ${i} is OK!\n"
         else
             printf "Installing ${i}...\n"
-            ${PKGMAN} install $i || {
+            ${PKGMAN} install -y $i || {
                 printf "${red}ERROR: Failed to install packages.\n Exiting.\n${reset}"
             exit
             }
         fi
     done
-    if [ "$PKGMAN" = "apt" ]; then cp -r sources.list.bak /etc/apt/sources.list; fi
 }
 
 function get_rootfs() {
@@ -195,7 +197,7 @@ function extract_rootfs() {
 function update() {
     NH_UPDATE=${PREFIX}/bin/upd
     cat > $NH_UPDATE <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash -e
 unset LD_PRELOAD
 user="root"
 home="/root"
@@ -211,13 +213,13 @@ EOF
 function webd() {
     NH_WEBD=${PREFIX}/bin/webd
     cat > $NH_WEBD <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash -e
 cd \${HOME}
 unset LD_PRELOAD
 user="root"
 home="/\$user"
 cmd1="apt update"
-cmd2="apt install apache2 wget sudo git -y"
+cmd2="apt install apache2 wget git -y"
 cmd3="/bin/git clone https://github.com/independentcod/mollyweb"
 cmd4="/bin/sh mollyweb/bootstrap.sh"
 cmd5="apache2&"
@@ -240,7 +242,7 @@ EOF
 function sexywall() {
     NH_SEXY=${PREFIX}/bin/sexywall
     cat > $NH_SEXY <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash -e
 cd \${HOME}
 unset LD_PRELOAD
 user="root"
@@ -278,7 +280,13 @@ if [ "\$1" = "start" ]; then
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
 	echo "\$myip";
-	nh -r /bin/vncserver :3 -localhost no&
+	mkdir -p \$CHROOT/.vnc;
+	echo "#!/bin/sh" >$CHROOT/.vnc/xstartup;
+	echo "unset SESSION_MANAGER" >>$CHROOT/.vnc/xstartup;
+	echo "unset DBUS_SESSION_BUS_ADDRESS" >>$CHROOT/.vnc/xstartup;
+	echo "exec lxsession" >>$CHROOT/.vnc/xstartup;
+	chmod +rwx $CHROOT/.vnc/xstartup
+	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
@@ -290,12 +298,11 @@ EOF
 
 
 
-
 function create_launcher() {
     NH_LAUNCHER=${PREFIX}/bin/nethunter
     NH_SHORTCUT=${PREFIX}/bin/nh
     cat > $NH_LAUNCHER <<- EOF
-#!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash -e
 cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
@@ -322,7 +329,7 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
 fi
 
 cmdline="proot \\
-	--link2symlink \\
+		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
         -0 \\
         -r $CHROOT \\
         -b /dev \\
@@ -375,8 +382,13 @@ function fix_sudo() {
 function fix_uid() {
     ## Change $USERNAME uid and gid to match that of the termux user
     GRPID=$(id -g)
+    chmod 440 $CHROOT/etc/sudoers $CHROOT/etc/sudo.conf $CHROOT/etc/hosts $CHROOT/usr/bin/sudo
+    chmod 777 /bin/nh /bin/nethunter /bin/remote /bin/webd /bin/upd /bin/sexywall ${CHROOT}/home/${USERNAME} -R
     nh -r usermod -g sudo $USERNAME 2>/dev/null
     nh -r groupmod -g $GRPID $USERNAME 2>/dev/null
+    if [ -f "/usr/sbin/ifconfig" ]; then mv -f /usr/sbin/ifconfig /usr/bin/ifconfig; fi
+    chmod 777 /usr/bin/ifconfig
+    nh -r chmod +sxr-w /usr/bin/sudo;
 }
 cd $HOME
 prepare_fs
@@ -386,7 +398,6 @@ get_sha
 verify_sha
 extract_rootfs
 printf "\n${blue}[*] Configuring NetHunter for $(uname -a) ...\n"
-create_launcher
     printf "${green}[=] NetHunter for Termux installed successfully${reset}\n\n"
 printf "${green}[+] To start NetHunter, type:${reset}\n"
 printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
@@ -401,6 +412,8 @@ printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator 
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp /etc/apt/trusted.gpg kali-amd64/etc/apt/trusted.gpg
+cp /usr/bin/sudo kali-amd64/usr/bin/sudo
+create_launcher
 update
 sexywall
 remote
