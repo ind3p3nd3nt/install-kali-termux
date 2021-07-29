@@ -280,7 +280,13 @@ if [ "\$1" = "start" ]; then
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
 	echo "\$myip";
-	nh -r /bin/vncserver :3 -localhost no&
+	mkdir -p \$CHROOT/.vnc;
+	echo "#!/bin/sh" >$CHROOT/.vnc/xstartup;
+	echo "unset SESSION_MANAGER" >>$CHROOT/.vnc/xstartup;
+	echo "unset DBUS_SESSION_BUS_ADDRESS" >>$CHROOT/.vnc/xstartup;
+	echo "exec lxsession" >>$CHROOT/.vnc/xstartup;
+	chmod +rwx $CHROOT/.vnc/xstartup
+	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
