@@ -407,7 +407,8 @@ printf "${green}[+] webd &                # To install an SSL Website www.mollye
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
 nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
-nh -r hostname -b OffensiveSecurity
+nh -r hostname -b localhost
+hostname -b localhost
 create_launcher
 update
 sexywall
@@ -419,10 +420,9 @@ if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
 if [ ! -d "${CHROOT}/root/Desktop/Wallpapers" ]; then mkdir ${CHROOT}/root/Desktop/Wallpapers; fi
 if [ ! -d "${CHROOT}/root/.vnc" ]; then mkdir ${CHROOT}/root/.vnc; fi
 echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
-echo 'lxterminal &' >> ${CHROOT}/root/.vnc/xstartup;
 chmod +rwx ${CHROOT}/root/.vnc/xstartup
-echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
-echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
+echo "127.0.0.1   localhost localhost.localdomain localhost localhost.localdomain4" > $CHROOT/etc/hosts
+echo "::1         localhost localhost.localdomain localhost localhost.localdomain6" >> $CHROOT/etc/hosts
 cleanup
 fix_profile_bash
 fix_sudo
