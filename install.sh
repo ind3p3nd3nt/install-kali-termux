@@ -4,7 +4,7 @@
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
-USERNAME=kalilinux
+USERNAME=root
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
 green='\033[1;32m'
@@ -273,19 +273,13 @@ if [ "\$1" = "install" ]; then
 	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
-	if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 fi
 if [ "\$1" = "start" ]; then
-	if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
-	echo "\$myip";
-	mkdir -p \$CHROOT/.vnc;
-	echo "#!/bin/sh" >$CHROOT/.vnc/xstartup;
-	echo "unset SESSION_MANAGER" >>$CHROOT/.vnc/xstartup;
-	echo "unset DBUS_SESSION_BUS_ADDRESS" >>$CHROOT/.vnc/xstartup;
-	echo "exec lxsession" >>$CHROOT/.vnc/xstartup;
-	chmod +rwx $CHROOT/.vnc/xstartup
+	echo "\$myip"
 	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24
 fi
 if [ "\$1" = "passwd" ]; then
@@ -412,7 +406,9 @@ printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator 
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
-cp -r /usr/bin/sudo kali-amd64/usr/bin/sudo
+nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
+nh -r hostname -b localhost
+hostname -b localhost
 create_launcher
 update
 sexywall
@@ -424,12 +420,11 @@ if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
 if [ ! -d "${CHROOT}/root/Desktop/Wallpapers" ]; then mkdir ${CHROOT}/root/Desktop/Wallpapers; fi
 if [ ! -d "${CHROOT}/root/.vnc" ]; then mkdir ${CHROOT}/root/.vnc; fi
 echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
-echo 'lxterminal &' >> ${CHROOT}/root/.vnc/xstartup;
-echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
-echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
+chmod +rwx ${CHROOT}/root/.vnc/xstartup
+echo "127.0.0.1   localhost localhost.localdomain localhost localhost.localdomain4" > $CHROOT/etc/hosts
+echo "::1         localhost localhost.localdomain localhost localhost.localdomain6" >> $CHROOT/etc/hosts
 cleanup
 fix_profile_bash
 fix_sudo
 fix_uid
 print_banner
-nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
