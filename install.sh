@@ -273,19 +273,19 @@ if [ "\$1" = "install" ]; then
 	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
-	if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 fi
 if [ "\$1" = "start" ]; then
-	if [ -f "$CHROOT/tmp/.X3-lock" ]; then rm -rf $CHROOT/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
 	echo "\$myip";
-	mkdir -p \$CHROOT/.vnc;
-	echo "#!/bin/sh" >$CHROOT/.vnc/xstartup;
-	echo "unset SESSION_MANAGER" >>$CHROOT/.vnc/xstartup;
-	echo "unset DBUS_SESSION_BUS_ADDRESS" >>$CHROOT/.vnc/xstartup;
-	echo "exec lxsession" >>$CHROOT/.vnc/xstartup;
-	chmod +rwx $CHROOT/.vnc/xstartup
+	mkdir -p \${CHROOT}/.vnc;
+	echo "#!/bin/sh" >${CHROOT}/.vnc/xstartup;
+	echo "unset SESSION_MANAGER" >>${CHROOT}/.vnc/xstartup;
+	echo "unset DBUS_SESSION_BUS_ADDRESS" >>${CHROOT}/.vnc/xstartup;
+	echo "exec lxsession" >>${CHROOT}/.vnc/xstartup;
+	chmod +rwx ${CHROOT}/.vnc/xstartup
 	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24
 fi
 if [ "\$1" = "passwd" ]; then
@@ -412,7 +412,7 @@ printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator 
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
-cp /usr/bin/sudo kali-amd64/usr/bin/sudo
+nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
 create_launcher
 update
 sexywall
@@ -432,4 +432,3 @@ fix_profile_bash
 fix_sudo
 fix_uid
 print_banner
-nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
