@@ -283,7 +283,7 @@ if [ "\$1" = "start" ]; then
 	nh -r mkdir -p ~/.vnc
 	nh -r echo "#!/bin/sh"> ~/.vnc/xstartup
 	nh -r echo "unset SESSION_MANAGER">> ~/.vnc/xstartup
-	nh -r "unset DBUS_SESSION_BUS_ADDRESS" >>~/.vnc/xstartup
+	nh -r echo "unset DBUS_SESSION_BUS_ADDRESS" >>~/.vnc/xstartup
 	nh -r echo "exec lxsession">> ~/.vnc/xstartup
 	chmod +rwx ~/.vnc/xstartup
 	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24
