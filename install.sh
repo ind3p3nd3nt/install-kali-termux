@@ -411,8 +411,8 @@ printf "${green}[+] remote stop           # To stop the VNC server${reset}\n\n"
 printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
-cp -r /etc/apt/trusted.gpg.d/kali-archive-keyring.gpg kali-amd64/etc/apt/trusted.gpg
-cp /usr/bin/sudo kali-amd64/usr/bin/sudo
+cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
+cp -r /usr/bin/sudo kali-amd64/usr/bin/sudo
 create_launcher
 update
 sexywall
@@ -432,3 +432,4 @@ fix_profile_bash
 fix_sudo
 fix_uid
 print_banner
+nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
