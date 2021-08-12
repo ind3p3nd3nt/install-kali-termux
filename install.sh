@@ -279,13 +279,7 @@ if [ "\$1" = "start" ]; then
 	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
-	echo "\$myip";
-	nh -r mkdir -p ~/.vnc
-	nh -r echo "#!/bin/sh"> ~/.vnc/xstartup
-	nh -r echo "unset SESSION_MANAGER">> ~/.vnc/xstartup
-	nh -r echo "unset DBUS_SESSION_BUS_ADDRESS" >>~/.vnc/xstartup
-	nh -r echo "exec lxsession">> ~/.vnc/xstartup
-	chmod +rwx ~/.vnc/xstartup
+	echo "\$myip"
 	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24
 fi
 if [ "\$1" = "passwd" ]; then
