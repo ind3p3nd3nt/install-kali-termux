@@ -62,8 +62,8 @@ function get_arch() {
 }
 function set_strings() {
     CHROOT=kali-${SYS_ARCH}
-    IMAGE_NAME=kalifs-${SYS_ARCH}-minimal.tar.xz
-    SHA_NAME=kalifs-${SYS_ARCH}-minimal.sha512sum
+    IMAGE_NAME=kalifs-${SYS_ARCH}-full.tar.xz
+    SHA_NAME=kalifs-${SYS_ARCH}-full.sha512sum
 }  
 function get_url() {
     ROOTFS_URL="${BASE_URL}/${IMAGE_NAME}"
