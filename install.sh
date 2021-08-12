@@ -4,7 +4,7 @@
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
-USERNAME=kalilinux
+USERNAME=root
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
 green='\033[1;32m'
@@ -407,6 +407,7 @@ printf "${green}[+] webd &                # To install an SSL Website www.mollye
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
 nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
+nh -r hostname -b OffensiveSecurity
 create_launcher
 update
 sexywall
@@ -419,6 +420,7 @@ if [ ! -d "${CHROOT}/root/Desktop/Wallpapers" ]; then mkdir ${CHROOT}/root/Deskt
 if [ ! -d "${CHROOT}/root/.vnc" ]; then mkdir ${CHROOT}/root/.vnc; fi
 echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
 echo 'lxterminal &' >> ${CHROOT}/root/.vnc/xstartup;
+chmod +rwx ${CHROOT}/root/.vnc/xstartup
 echo "127.0.0.1   OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain4" > $CHROOT/etc/hosts
 echo "::1         OffensiveSecurity OffensiveSecurity.localdomain OffensiveSecurity OffensiveSecurity.localdomain6" >> $CHROOT/etc/hosts
 cleanup
