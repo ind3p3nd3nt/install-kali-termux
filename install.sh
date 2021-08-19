@@ -202,7 +202,7 @@ unset LD_PRELOAD
 user="root"
 home="/root"
 cmd1="apt update"
-cmd2="apt-get install kali-menu kali-tools-802-11 kali-tools-social-engineering kali-tools-sdr kali-tools-information-gathering kali-tools-vulnerability kali-tools-fuzzing kali-tools-crypto-stego kali-tools-hardware kali-tools-gpu kali-tools-database kali-tools-reverse-engineering kali-tools-bluetooth kali-tools-exploitation kali-tools-reporting kali-tools-post-exploitation kali-tools-top10 kali-tools-web kali-tools-rfid kali-tools-passwords kali-tools-forensics kali-tools-voip kali-tools-wireless kali-tools-sniffing-spoofing kali-tools-windows-resources -y"
+cmd2="apt-get dist-updgrade -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 exit 0
