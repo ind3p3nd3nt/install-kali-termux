@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y;
+	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde kali-menu net-tools lxterminal -y && nh -r apt remove xfce4 -y;
 fi
 if [ "\$1" = "stop" ]; then
 	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
@@ -303,8 +303,8 @@ cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
 ## Default user is "kalilinux"
-user="kalilinux"
-home="/home/kalilinux"
+user="root"
+home="/root"
 start="sudo -u $USERNAME /bin/bash --login"
 
 ## NH can be launched as root with the "-r" cmd attribute
