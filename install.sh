@@ -406,14 +406,14 @@ printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator 
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
-nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
-nh -r hostname -b localhost
 hostname -b localhost
 create_launcher
 update
 sexywall
 remote
 webd
+nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
+nh -r hostname -b localhost
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then nh -r useradd -m $USERNAME; fi
 if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then mkdir ${CHROOT}/home/${USERNAME}; fi
 if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
