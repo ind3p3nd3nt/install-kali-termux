@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y && nh -r apt remove xfce4 -y;
+	nh -r apt update && nh -r apt install tigervnc-standalone-server xorg lxde-core kali-menu net-tools lxterminal -y && nh -r apt remove xfce4 -y;
 fi
 if [ "\$1" = "stop" ]; then
 	if [ -f "${CHROOT}/tmp/.X2-lock" ]; then rm -rf ${CHROOT}/tmp/.X2-lock && nh -r /bin/vncserver -kill :2; fi
@@ -285,7 +285,7 @@ if [ "\$1" = "start" ]; then
 	nh -r mkdir -p /root/.vnc
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
 	nh -r chmod +rwx /root/.vnc/xstartup
-	nh -r /bin/vncserver :2 -localhost no
+	nh -r /bin/vncserver :2 -localhost no 
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
