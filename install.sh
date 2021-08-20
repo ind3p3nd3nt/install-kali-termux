@@ -284,6 +284,7 @@ if [ "\$1" = "start" ]; then
 	echo "\$myip"
 	nh -r mkdir -p /root/.vnc
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
+	nh -r chmod +rwx /root/.vnc/xstartup
 	nh -r /bin/vncserver :2 -localhost no
 fi
 if [ "\$1" = "passwd" ]; then
