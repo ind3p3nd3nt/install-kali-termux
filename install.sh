@@ -426,8 +426,6 @@ fix_profile_bash
 fix_sudo
 fix_uid
 print_banner
-if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then nh -r useradd -m $USERNAME; fi
-if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then mkdir ${CHROOT}/home/${USERNAME}; fi
 if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
 if [ ! -d "${CHROOT}/root/Desktop/Wallpapers" ]; then mkdir ${CHROOT}/root/Desktop/Wallpapers; fi
 if [ ! -d "${CHROOT}/root/.vnc" ]; then mkdir ${CHROOT}/root/.vnc; fi
