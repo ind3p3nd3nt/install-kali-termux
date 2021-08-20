@@ -275,16 +275,16 @@ if [ "\$1" = "install" ]; then
 	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y && nh -r apt remove xfce4 -y;
 fi
 if [ "\$1" = "stop" ]; then
-	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
+	if [ -f "${CHROOT}/tmp/.X2-lock" ]; then rm -rf ${CHROOT}/tmp/.X2-lock && nh -r /bin/vncserver -kill :2; fi
 fi
 if [ "\$1" = "start" ]; then
-	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/.X3-lock && nh -r /bin/vncserver -kill :3; fi
-	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
+	if [ -f "${CHROOT}/tmp/.X2-lock" ]; then rm -rf ${CHROOT}/tmp/.X2-lock && nh -r /bin/vncserver -kill :2; fi
+	echo 'VNC Server listening on 0.0.0.0:5902 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
 	echo "\$myip"
 	nh -r mkdir -p /root/.vnc
-	nh -r echo "lxsession &" > /root/.vnc/xstartup 
-	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24
+	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
+	nh -r /bin/vncserver :2 -localhost no
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
@@ -423,8 +423,6 @@ if [ ! -d "${CHROOT}/home/${USERNAME}" ]; then mkdir ${CHROOT}/home/${USERNAME};
 if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
 if [ ! -d "${CHROOT}/root/Desktop/Wallpapers" ]; then mkdir ${CHROOT}/root/Desktop/Wallpapers; fi
 if [ ! -d "${CHROOT}/root/.vnc" ]; then mkdir ${CHROOT}/root/.vnc; fi
-echo 'lxsession &' > ${CHROOT}/root/.vnc/xstartup;
-chmod +rwx ${CHROOT}/root/.vnc/xstartup
 echo "127.0.0.1   localhost localhost.localdomain localhost localhost.localdomain4" > $CHROOT/etc/hosts
 echo "::1         localhost localhost.localdomain localhost localhost.localdomain6" >> $CHROOT/etc/hosts
 cleanup
