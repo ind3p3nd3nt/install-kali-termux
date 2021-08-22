@@ -251,8 +251,8 @@ user="root"
 home="/\$user"
 cmd1="apt update"
 cmd2="apt install git pcmanfm -y"
-cmd3="git clone https://github.com/ind3p3nd3nt/xfce-background-image-rotator"
-cmd4="sh xfce-background-image-rotator/rotate_desktop_images.sh&"
+cmd3="git clone https://github.com/ind3p3nd3nt/lxde-wallpaperchanger"
+cmd4="sh lxde-wallpaperchanger/wallpaperchanger.sh &"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
@@ -265,7 +265,6 @@ EOF
 }
 
 
-
 function remote() {
     NH_REMOTE=${PREFIX}/bin/remote
     cat > $NH_REMOTE <<- EOF
@@ -273,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tigervnc-standalone-server xorg xfce4 kali-menu net-tools lxterminal -y;
+	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver xorg lxde-core kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
 	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/*X* && nh -r /bin/vncserver -kill :3; fi
@@ -286,7 +285,7 @@ if [ "\$1" = "start" ]; then
 	nh -r mkdir -p /root/.vnc
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
 	nh -r chmod +rwx /root/.vnc/xstartup
-	nh -r /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24 -xstartup xfce4-session
+	nh -r /bin/vncserver :3 -geometry 800x600 -depth 24
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
@@ -295,7 +294,6 @@ exit 0
 EOF
     chmod +x $NH_REMOTE  
 }
-
 
 
 
@@ -375,7 +373,7 @@ function fix_sudo() {
     if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +rxs-w $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +rxs-w $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +rxs-w $CHROOT/usr/bin/su; fi
     echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers
-    echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" >> $CHROOT/etc/sudoers
+    echo "%sudo    ALL=(ALL:ALL) ALL" >> $CHROOT/etc/sudoers
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
@@ -421,6 +419,7 @@ remote
 webd
 nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
 nh -r hostname -b localhost
+nh -r useradd -m kalilinux
 echo "127.0.0.1   localhost localhost.localdomain localhost localhost.localdomain4" > $CHROOT/etc/hosts
 echo "::1         localhost localhost.localdomain localhost localhost.localdomain6" >> $CHROOT/etc/hosts
 cleanup
