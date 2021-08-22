@@ -308,7 +308,7 @@ unset LD_PRELOAD
 ## Default user is "kalilinux"
 user="kalilinux"
 home="/home/kalilinux"
-start="sudo -u $USERNAME /bin/bash --login"
+start="sudo -u kalilinux /bin/bash --login"
 
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
