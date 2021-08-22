@@ -285,6 +285,7 @@ if [ "\$1" = "start" ]; then
 	nh -r mkdir -p /root/.vnc
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
 	nh -r chmod +rwx /root/.vnc/xstartup
+	nh -r export USER=root
 	nh -r /bin/vncserver :3 -geometry 800x600 -depth 24
 fi
 if [ "\$1" = "passwd" ]; then
