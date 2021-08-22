@@ -251,8 +251,8 @@ user="root"
 home="/\$user"
 cmd1="apt update"
 cmd2="apt install git pcmanfm -y"
-cmd3="git clone https://github.com/ind3p3nd3nt/xfce-background-image-rotator"
-cmd4="sh xfce-background-image-rotator/rotate_desktop_images.sh&"
+cmd3="git clone https://github.com/ind3p3nd3nt/lxde-wallpaperchanger"
+cmd4="sh lxde-wallpaperchanger/wallpaperchanger.sh &"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tigervnc-standalone-server xorg xfce4 kali-menu net-tools lxterminal -y;
+	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver xorg lxde-core kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
 	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/*X* && nh -r /bin/vncserver -kill :3; fi
@@ -373,7 +373,7 @@ function fix_sudo() {
     if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +rxs-w $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +rxs-w $CHROOT/usr/bin/sudo; fi
     if [ -f "$CHROOT/usr/bin/su" ]; then chmod +rxs-w $CHROOT/usr/bin/su; fi
     echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers
-    echo "%sudo    ALL=(ALL:ALL) NOPASSWD:ALL" >> $CHROOT/etc/sudoers
+    echo "%sudo    ALL=(ALL:ALL) ALL" >> $CHROOT/etc/sudoers
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
