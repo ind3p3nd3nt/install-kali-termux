@@ -1,10 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash -e
 # This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
 # This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
 BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
-USERNAME=root
+USERNAME=kalilinux
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
 green='\033[1;32m'
@@ -251,8 +252,8 @@ user="root"
 home="/\$user"
 cmd1="apt update"
 cmd2="apt install git pcmanfm -y"
-cmd3="git clone https://github.com/independentcod/lxde-wallpaperchanger.git"
-cmd4="sh lxde-wallpaperchanger/install.sh&"
+cmd3="git clone https://github.com/ind3p3nd3nt/xfce-background-image-rotator"
+cmd4="sh xfce-background-image-rotator/rotate_desktop_images.sh&"
 nh -r \$cmd1;
 nh -r \$cmd2;
 nh -r \$cmd3;
@@ -272,23 +273,23 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt update && nh -r apt install tigervnc-standalone-server lxde-core kali-menu net-tools lxterminal -y && nh -r apt remove xfce4 -y;
+	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tigervnc-standalone-server xorg xfce4 kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
-	if [ -f "${CHROOT}/tmp/.X2-lock" ]; then rm -rf ${CHROOT}/tmp/.X2-lock && nh -r /bin/vncserver -kill :2; fi
+	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/*X* && nh -r /bin/vncserver -kill :3; fi
 fi
 if [ "\$1" = "start" ]; then
-	if [ -f "${CHROOT}/tmp/.X2-lock" ]; then rm -rf ${CHROOT}/tmp/.X2-lock && nh -r /bin/vncserver -kill :2; fi
-	echo 'VNC Server listening on 0.0.0.0:5902 you can remotely connect another device to that display with a vnc viewer';
+	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/*X* && nh -r /bin/vncserver -kill :3; fi
+	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
 	echo "\$myip"
-	nh -r mkdir -p /root/.vnc
-	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
-	nh -r chmod +rwx /root/.vnc/xstartup
-	nh -r /bin/vncserver :2  -xstartup lxsession -localhost no -geometry 800x600 -depth 24
+	nh mkdir -p /home/kalilinux/.vnc
+	nh wget -O /home/kalilinux/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
+	nh chmod +rwx /home/kalilinux/.vnc/xstartup
+	nh /bin/vncserver :3 -localhost no -geometry 800x600 -depth 24 -xstartup xfce4-session
 fi
 if [ "\$1" = "passwd" ]; then
-	nh -r vncpasswd;
+	nh vncpasswd;
 fi
 exit 0
 EOF
@@ -306,8 +307,8 @@ cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
 unset LD_PRELOAD
 ## Default user is "kalilinux"
-user="root"
-home="/root"
+user="kalilinux"
+home="/home/kalilinux"
 start="sudo -u $USERNAME /bin/bash --login"
 
 ## NH can be launched as root with the "-r" cmd attribute
@@ -426,6 +427,7 @@ fix_profile_bash
 fix_sudo
 fix_uid
 print_banner
+if [ ! -d "${CHROOT}/home/kalilinux/" ]; then mkdir ${CHROOT}/home/kalilinux/; fi
 if [ ! -d "${CHROOT}/root/Desktop/" ]; then mkdir ${CHROOT}/root/Desktop/; fi
 if [ ! -d "${CHROOT}/root/Desktop/Wallpapers" ]; then mkdir ${CHROOT}/root/Desktop/Wallpapers; fi
 if [ ! -d "${CHROOT}/root/.vnc" ]; then mkdir ${CHROOT}/root/.vnc; fi
