@@ -419,6 +419,7 @@ remote
 webd
 nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
 nh -r hostname -b localhost
+nh -r useradd -m kalilinux
 echo "127.0.0.1   localhost localhost.localdomain localhost localhost.localdomain4" > $CHROOT/etc/hosts
 echo "::1         localhost localhost.localdomain localhost localhost.localdomain6" >> $CHROOT/etc/hosts
 cleanup
