@@ -202,7 +202,7 @@ unset LD_PRELOAD
 user="root"
 home="/root"
 cmd1="apt update"
-cmd2="apt-get dist-updgrade -y"
+cmd2="apt-get dist-upgrade -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 exit 0
