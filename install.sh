@@ -275,18 +275,21 @@ if [ "\$1" = "install" ]; then
 	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver xorg lxde-core kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
-	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/*X* && nh -r /bin/vncserver -kill :3; fi
+	nh -r wget -O /root/stopvnc https://pastebin.com/raw/cvZkgGWV
+	nh -r chmod +rwx /root/stopvnc
+	nh -r sh /root/stopvnc
 fi
 if [ "\$1" = "start" ]; then
-	if [ -f "${CHROOT}/tmp/.X3-lock" ]; then rm -rf ${CHROOT}/tmp/*X* && nh -r /bin/vncserver -kill :3; fi
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
 	myip=\$(ifconfig | grep inet) 
 	echo "\$myip"
 	nh -r mkdir -p /root/.vnc
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3
 	nh -r chmod +rwx /root/.vnc/xstartup
-	nh -r export USER=root
-	nh -r /bin/vncserver :3 -geometry 800x600 -depth 24
+	nh -r wget -O /root/startvnc https://pastebin.com/raw/dcBFs6N4
+	nh -r chmod +rwx /root/startvnc
+	nh -r sh /root/startvnc
+
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
