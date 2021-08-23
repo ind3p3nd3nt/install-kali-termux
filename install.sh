@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver xorg lxde-core kali-menu net-tools lxterminal -y;
+	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver xorg lxde kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
 	nh -r wget -O /root/stopvnc https://pastebin.com/raw/cvZkgGWV
