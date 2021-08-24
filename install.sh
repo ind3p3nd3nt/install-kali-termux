@@ -1,4 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash -e
+#!/bin/bash -e
 # This repository has been forked from https://www.kali.org/docs/nethunter/nethunter-rootless/
 # This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
@@ -272,7 +273,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver lxde kali-menu net-tools lxterminal -y;
+	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver lxde-core kali-menu net-tools lxterminal -y && nh -r apt dist-upgrade -y;
 fi
 if [ "\$1" = "stop" ]; then
 	nh -r USER=root /usr/bin/vncserver -kill :3
@@ -285,6 +286,7 @@ if [ "\$1" = "start" ]; then
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3 >.wget
 	nh -r chmod +rwx /root/.vnc/xstartup
         nh -r USER=root /usr/bin/vncserver :3 &
+
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
@@ -308,6 +310,7 @@ unset LD_PRELOAD
 user="kalilinux"
 home="/home/kalilinux"
 start="sudo -u kalilinux /bin/bash --login"
+
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
 if grep -q "\$USERNAME" \${CHROOT}/etc/passwd; then
@@ -318,25 +321,28 @@ fi
 if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]]; then
     user="root"
     home="/\$user"
+
     start="/bin/bash --login"
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]]; then
         shift
     fi
 fi
+
 cmdline="proot \\
-		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
+	--link2symlink \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
         -b /proc \\
-        -b \${CHROOT}\${home}:/dev/shm \\
+        -b $CHROOT\$home:/dev/shm \\
         -w \$home \\
            /usr/bin/env -i \\
-           HOME=\${home} \\
+           HOME=\$home \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
            \$start"
+
 cmd="\$@"
 if [ "\$#" == "0" ]; then
     exec \$cmdline
@@ -365,10 +371,10 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +rxs-w $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +rxs-w $CHROOT/usr/bin/sudo; fi
-    if [ -f "$CHROOT/usr/bin/su" ]; then chmod +rxs-w $CHROOT/usr/bin/su; fi
-    echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers
-    echo "%sudo    ALL=(ALL:ALL) ALL" >> $CHROOT/etc/sudoers
+    chmod +s $CHROOT/usr/bin/sudo
+    chmod +s $CHROOT/usr/bin/su
+    echo "kalilinux    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers.d/kalilinux
+
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
@@ -406,7 +412,6 @@ printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator 
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
-hostname -b localhost
 create_launcher
 update
 sexywall
