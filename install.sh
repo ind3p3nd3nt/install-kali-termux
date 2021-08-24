@@ -372,7 +372,7 @@ function fix_sudo() {
     ## fix sudo & su on start
     chmod +s $CHROOT/usr/bin/sudo
     chmod +s $CHROOT/usr/bin/su
-    echo "kalilinux    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers.d/kali
+    echo "kalilinux    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers.d/kalilinux
 
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
