@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver lxde kali-menu net-tools lxterminal -y;
+	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver lxde-core kali-menu net-tools lxterminal -y && nh -r apt dist-upgrade -y;
 fi
 if [ "\$1" = "stop" ]; then
 	nh -r USER=root /usr/bin/vncserver -kill :3
@@ -328,15 +328,15 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
 fi
 
 cmdline="proot \\
-		$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
+	--link2symlink \\
         -0 \\
         -r $CHROOT \\
         -b /dev \\
         -b /proc \\
-        -b \${CHROOT}\${home}:/dev/shm \\
+        -b $CHROOT\$home:/dev/shm \\
         -w \$home \\
            /usr/bin/env -i \\
-           HOME=\${home} \\
+           HOME=\$home \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
@@ -370,10 +370,10 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
-    if [ -f "$CHROOT/usr/bin/sudo" ]; then chmod +rxs-w $CHROOT/usr/bin/sudo; else nh -r apt update && nh -r apt install sudo busybox -y && chmod +rxs-w $CHROOT/usr/bin/sudo; fi
-    if [ -f "$CHROOT/usr/bin/su" ]; then chmod +rxs-w $CHROOT/usr/bin/su; fi
-    echo "root    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers
-    echo "%sudo    ALL=(ALL:ALL) ALL" >> $CHROOT/etc/sudoers
+    chmod +s $CHROOT/usr/bin/sudo
+    chmod +s $CHROOT/usr/bin/su
+    echo "kalilinux    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers.d/kali
+
     # https://bugzilla.redhat.com/show_bug.cgi?id=1773148
     echo "Set disable_coredump false" > $CHROOT/etc/sudo.conf
 }
@@ -411,7 +411,6 @@ printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator 
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
 wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
 cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
-hostname -b localhost
 create_launcher
 update
 sexywall
