@@ -328,15 +328,15 @@ if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]];
 fi
 
 cmdline="proot \\
-	--link2symlink \\
+	$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
         -0 \\
         -r $CHROOT \\
         -b /dev \\
         -b /proc \\
-        -b $CHROOT\$home:/dev/shm \\
+        -b \${CHROOT}\${home}:/dev/shm \\
         -w \$home \\
            /usr/bin/env -i \\
-           HOME=\$home \\
+           HOME=\${home} \\
            PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
