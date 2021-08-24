@@ -272,12 +272,10 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver xorg lxde kali-menu net-tools lxterminal -y;
+	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver lxde kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
-	nh -r wget -O /root/stopvnc https://pastebin.com/raw/cvZkgGWV >.wget
-	nh -r chmod +rwx /root/stopvnc
-	nh -r sh /root/stopvnc &
+	nh -r USER=root /usr/bin/vncserver -kill :3
 fi
 if [ "\$1" = "start" ]; then
 	echo 'VNC Server listening on 0.0.0.0:5903 you can remotely connect another device to that display with a vnc viewer';
@@ -286,9 +284,7 @@ if [ "\$1" = "start" ]; then
 	nh -r mkdir -p /root/.vnc
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3 >.wget
 	nh -r chmod +rwx /root/.vnc/xstartup
-	nh -r wget -O /root/startvnc https://pastebin.com/raw/dcBFs6N4 >.wget
-	nh -r chmod +rwx /root/startvnc
-	nh -r sh /root/startvnc &
+        nh -r USER=root /usr/bin/vncserver :3 &
 
 fi
 if [ "\$1" = "passwd" ]; then
