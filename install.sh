@@ -3,7 +3,7 @@
 # This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
-BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
+BASE_URL=https://build.nethunter.com/kalifs/kalifs-20190228/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
@@ -62,8 +62,8 @@ function get_arch() {
 }
 function set_strings() {
     CHROOT=kali-${SYS_ARCH}
-    IMAGE_NAME=kalifs-${SYS_ARCH}-full.tar.xz
-    SHA_NAME=kalifs-${SYS_ARCH}-full.sha512sum
+    IMAGE_NAME=kalifs-${SYS_ARCH}-minimal.tar.xz
+    SHA_NAME=kalifs-${SYS_ARCH}-minimal.sha512sum
 }  
 function get_url() {
     ROOTFS_URL="${BASE_URL}/${IMAGE_NAME}"
@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt remove mitmproxy -y && nh -r apt update && nh -r apt install tightvncserver desktop-base lxde-core kali-menu net-tools lxterminal -y && nh -r dpkg --configure -a;
+	nh -r apt update && nh -r apt install tightvncserver desktop-base lxde-core kali-menu net-tools lxterminal -y;
 fi
 if [ "\$1" = "stop" ]; then
 	nh -r USER=root /usr/bin/vncserver -kill :3
@@ -285,7 +285,6 @@ if [ "\$1" = "start" ]; then
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3 >.wget
 	nh -r chmod +rwx /root/.vnc/xstartup
         nh -r USER=root /usr/bin/vncserver :3 &
-
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
@@ -309,7 +308,6 @@ unset LD_PRELOAD
 user="kalilinux"
 home="/home/kalilinux"
 start="sudo -u kalilinux /bin/bash --login"
-
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
 if grep -q "\$USERNAME" \${CHROOT}/etc/passwd; then
@@ -320,13 +318,11 @@ fi
 if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]]; then
     user="root"
     home="/\$user"
-
     start="/bin/bash --login"
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]]; then
         shift
     fi
 fi
-
 cmdline="proot \\
 	$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
         -0 \\
@@ -341,7 +337,6 @@ cmdline="proot \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
            \$start"
-
 cmd="\$@"
 if [ "\$#" == "0" ]; then
     exec \$cmdline
