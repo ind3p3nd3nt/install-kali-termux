@@ -202,7 +202,7 @@ unset LD_PRELOAD
 user="root"
 home="/root"
 cmd1="apt update"
-cmd2="apt-get dist-upgrade -y"
+cmd2="apt-get install kali-linux-nethunter -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 exit 0
@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt update && nh -r apt install tightvncserver xfce4 kali-menu net-tools xterm lxterminal systemd- -y;
+	nh -r apt update && nh -r apt install tightvncserver kali-defaults-desktop  kali-menu net-tools xterm lxterminal  -y;
 fi
 if [ "\$1" = "stop" ]; then
 	nh -r USER=root /usr/bin/vncserver -kill :3
@@ -404,7 +404,7 @@ printf "${green}[+] To start NetHunter, type:${reset}\n"
 printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
-printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
+printf "${green}[+] upd                   # install ALL nethunter tools${reset}\n\n"
 printf "${green}[+] remote install        # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
 printf "${green}[+] remote start          # To start the VNC server${reset}\n\n"
 printf "${green}[+] remote passwd         # To change the remote VNC password${reset}\n\n"
