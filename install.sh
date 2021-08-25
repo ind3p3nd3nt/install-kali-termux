@@ -370,6 +370,7 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
+    nh -r apt update
     nh -r apt install sudo busybox -y
     chmod +s $CHROOT/usr/bin/sudo
     chmod +s $CHROOT/usr/bin/su
