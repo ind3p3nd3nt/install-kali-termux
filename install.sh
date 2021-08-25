@@ -370,6 +370,7 @@ function fix_profile_bash() {
 
 function fix_sudo() {
     ## fix sudo & su on start
+    nh -r apt install sudo busybox -y
     chmod +s $CHROOT/usr/bin/sudo
     chmod +s $CHROOT/usr/bin/su
     echo "kalilinux    ALL=(ALL:ALL) ALL" > $CHROOT/etc/sudoers.d/kalilinux
