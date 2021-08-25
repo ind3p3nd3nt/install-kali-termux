@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt update && nh -r apt install tightvncserver kali-desktop-xcfe kali-menu net-tools lxterminal --no-install-recommend -y;
+	nh -r apt update && nh -r apt install tightvncserver kali-desktop-xcfe kali-menu net-tools lxterminal --no-install-recommends -y;
 fi
 if [ "\$1" = "stop" ]; then
 	nh -r USER=root /usr/bin/vncserver -kill :3
