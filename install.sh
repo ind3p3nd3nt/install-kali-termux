@@ -3,7 +3,7 @@
 # This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
-BASE_URL=https://build.nethunter.com/kalifs/kalifs-20190228/
+BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
@@ -202,7 +202,7 @@ unset LD_PRELOAD
 user="root"
 home="/root"
 cmd1="apt update"
-cmd2="apt-get dist-upgrade -y"
+cmd2="apt-get install kali-linux-nethunter -y"
 nh -r \$cmd1;
 nh -r \$cmd2;
 exit 0
@@ -272,7 +272,7 @@ function remote() {
 cd \${HOME}
 unset LD_PRELOAD
 if [ "\$1" = "install" ]; then
-	nh -r apt update && nh -r apt install tightvncserver desktop-base lxde-core kali-menu net-tools lxterminal -y;
+	nh -r apt update && nh -r apt install tightvncserver kali-defaults-desktop  kali-menu net-tools xterm lxterminal  -y;
 fi
 if [ "\$1" = "stop" ]; then
 	nh -r USER=root /usr/bin/vncserver -kill :3
@@ -285,6 +285,7 @@ if [ "\$1" = "start" ]; then
 	nh -r wget -O /root/.vnc/xstartup https://pastebin.com/raw/McmmnZc3 >.wget
 	nh -r chmod +rwx /root/.vnc/xstartup
         nh -r USER=root /usr/bin/vncserver :3 &
+
 fi
 if [ "\$1" = "passwd" ]; then
 	nh -r vncpasswd;
@@ -308,6 +309,7 @@ unset LD_PRELOAD
 user="kalilinux"
 home="/home/kalilinux"
 start="sudo -u kalilinux /bin/bash --login"
+
 ## NH can be launched as root with the "-r" cmd attribute
 ## Also check if user $USERNAME exists, if not start as root
 if grep -q "\$USERNAME" \${CHROOT}/etc/passwd; then
@@ -318,11 +320,13 @@ fi
 if [[ \$KALIUSR == "0" || ("\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R")) ]]; then
     user="root"
     home="/\$user"
+
     start="/bin/bash --login"
     if [[ "\$#" != "0" && ("\$1" == "-r" || "\$1" == "-R") ]]; then
         shift
     fi
 fi
+
 cmdline="proot \\
 	$(if [ ! -z "$getprop" ]; then echo "--link2symlink \\\\"; fi)
         -0 \\
@@ -337,6 +341,7 @@ cmdline="proot \\
            TERM=\$TERM \\
            LANG=C.UTF-8 \\
            \$start"
+
 cmd="\$@"
 if [ "\$#" == "0" ]; then
     exec \$cmdline
@@ -399,7 +404,7 @@ printf "${green}[+] To start NetHunter, type:${reset}\n"
 printf "${green}[+] nethunter             # To start NetHunter cli${reset}\n"
 printf "${green}[+] nethunter -r          # To run NetHunter as root${reset}\n"
 printf "${green}[+] nh                    # Shortcut for nethunter${reset}\n\n"
-printf "${green}[+] upd                   # To update everything and install ALL Kali Linux tools${reset}\n\n"
+printf "${green}[+] upd                   # install ALL nethunter tools${reset}\n\n"
 printf "${green}[+] remote install        # To install a LXDE Display Manager on port 5903 reachable by other devices${reset}\n\n"
 printf "${green}[+] remote start          # To start the VNC server${reset}\n\n"
 printf "${green}[+] remote passwd         # To change the remote VNC password${reset}\n\n"
