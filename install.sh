@@ -3,7 +3,7 @@
 # This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
-BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
+BASE_URL=https://build.nethunter.com/kalifs/kalifs-20161005/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
@@ -46,7 +46,7 @@ function get_arch() {
         arm64-v8a|arm64-v8|aarch64)
             SYS_ARCH=arm64
             ;;
-        armeabi|armeabi-v7a)
+        armeabi|armv7l)
             SYS_ARCH=armhf
             ;;
         x86_64|amd64)
@@ -62,8 +62,8 @@ function get_arch() {
 }
 function set_strings() {
     CHROOT=kali-${SYS_ARCH}
-    IMAGE_NAME=kalifs-${SYS_ARCH}-minimal.tar.xz
-    SHA_NAME=kalifs-${SYS_ARCH}-minimal.sha512sum
+    IMAGE_NAME=kalifs-${SYS_ARCH}-full.tar.xz
+    SHA_NAME=kalifs-${SYS_ARCH}-full.sha512sum
 }  
 function get_url() {
     ROOTFS_URL="${BASE_URL}/${IMAGE_NAME}"
@@ -411,14 +411,11 @@ printf "${green}[+] remote passwd         # To change the remote VNC password${r
 printf "${green}[+] remote stop           # To stop the VNC server${reset}\n\n"
 printf "${green}[+] sexywall &            # To install a sexy wallpaper rotator in LXDE for remote sessions${reset}\n\n"
 printf "${green}[+] webd &                # To install an SSL Website www.mollyeskam.net as template${reset}\n\n"
-wget https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2020.2_all.deb && dpkg -i ./kali-archive-keyring_2020.2_all.deb
-cp -r kali-archive-keyring_2020.2_all.deb ${CHROOT}/root/
 create_launcher
 update
 sexywall
 remote
 webd
-nh -r dpkg -i kali-archive-keyring_2020.2_all.deb
 nh -r hostname -b localhost
 nh -r useradd -m kalilinux
 echo "127.0.0.1   localhost localhost.localdomain localhost localhost.localdomain4" > $CHROOT/etc/hosts
