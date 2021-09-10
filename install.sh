@@ -3,7 +3,7 @@
 # This script is to install NetHunter on other Linux devices than an Android, it will work on Ubuntu and Debian.
 # I am trying to make it work on CentOS but for some reason PRoot fails to execute anything
 VERSION=2020030908
-BASE_URL=https://build.nethunter.com/kalifs/kalifs-20161005/
+BASE_URL=https://build.nethunter.com/kalifs/kalifs-latest/
 USERNAME=kalilinux
 PKGMAN=$(if [ -f "/usr/bin/apt" ]; then echo "apt"; elif [ -f "/usr/bin/yum" ]; then echo "yum"; elif [ -f "/usr/bin/zypper" ]; then echo "zypper"; elif [ -f "/usr/bin/pkg" ]; then echo "pkg"; elif [ -f "/usr/bin/pacman" ]; then echo "pacman"; fi)
 red='\033[1;31m'
